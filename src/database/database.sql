@@ -1,0 +1,71 @@
+-- Active: 1700054762577@@127.0.0.1@3306
+
+CREATE TABLE IF NOT EXISTS patients (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    rg TEXT NOT NULL UNIQUE,
+    cpf TEXT UNIQUE,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS companies (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    cnpj TEXT UNIQUE,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS exams (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL UNIQUE,
+    price INT DEFAULT(0) NOT NULL,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS occupational_risks (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL UNIQUE,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS forms (
+    id TEXT PRIMARY KEY NOT NULL,
+    id_company TEXT NOT NULL,
+    id_patient TEXT NOT NULL,
+    name_company TEXT NOT NULL,
+    name_patient TEXT NOT NULL,
+    rg TEXT NOT NULL,
+    cnpj TEXT,
+    cpf TEXT,
+    number_procedures INT NOT NULL,
+    amount INT DEFAULT(0) NOT NULL,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    FOREIGN KEY(id_company) REFERENCES companies(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(id_patient) REFERENCES patients(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS procedures_forms (
+    id TEXT PRIMARY KEY NOT NULL,
+    id_form TEXT NOT NULL,
+    id_exam TEXT NOT NULL,
+    name_exam TEXT NOT NULL,
+    price INT DEFAULT(0) NOT NULL,
+    FOREIGN KEY(id_form) REFERENCES forms(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(id_exam) REFERENCES exams(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS occupationalRisk_forms (
+    id TEXT PRIMARY KEY NOT NULL,
+    id_form TEXT NOT NULL,
+    id_risk TEXT NOT NULL,
+    name_risk TEXT NOT NULL,
+    FOREIGN KEY(id_form) REFERENCES forms(id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY(id_risk) REFERENCES occupational_risks(id) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS occupationalRisk_forms;
