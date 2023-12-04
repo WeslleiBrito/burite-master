@@ -1,21 +1,20 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { BaseError } from "../errors/BaseError";
-import { InvoicingBusiness } from "../business/InvoicingBusiness";
+import { ExpensesBusiness } from "../business/ExpensesBusiness";
 
 
-export class InvoicingController {
+export class ExpensesController {
 
     constructor(
-        private invoicingBusiness: InvoicingBusiness
+        private expensesBusiness: ExpensesBusiness
     ){}
 
-    public getAllSaleItem = async (req: Request, res: Response) => {
+    public getAllExpenses = async (req: Request, res: Response) => {
 
         try {
            
-
-            const output = await this.invoicingBusiness.getAllSaleItem()
+            const output = await this.expensesBusiness.getExpenses()
 
             res.status(200).send(output)
 

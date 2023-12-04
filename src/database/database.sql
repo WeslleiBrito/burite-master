@@ -69,3 +69,13 @@ CREATE TABLE IF NOT EXISTS occupationalRisk_forms (
 );
 
 DROP TABLE IF EXISTS occupationalRisk_forms;
+
+CREATE TABLE IF NOT EXISTS total_values (
+    id TEXT PRIMARY KEY NOT NULL,
+    invoicing INT DEFAULT(0),
+    cost INT DEFAULT(0),
+    fixed_expenses INT DEFAULT(0),
+    variable_expenses INT DEFAULT(0),
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    updated_at TEXT DEFAULT(DATETIME()) NOT NULL
+);
