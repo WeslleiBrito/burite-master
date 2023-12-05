@@ -18,6 +18,11 @@ export interface TotalValuesDB {
     cost: number,
     fixed_expenses: number,
     variable_expenses: number,
+    discount: number,
+    general_monetary_profit: number,
+    general_percentage_profit: number,
     created_at: string,
-    updated_at: string
+    updated_at: string,
+    discount_percentage: number,
+    variable_expense_percentage: number
 }

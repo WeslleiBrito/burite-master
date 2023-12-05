@@ -24,4 +24,21 @@ export abstract class BaseDatabase {
     protected static async enableForeignKeys() {
         await BaseDatabase.connection.raw('SET foreign_key_checks = 1;');
     }
+
+    protected static connectionDatabaseSqlite = knex(
+        {
+            client: "sqlite3",
+            connection: {
+                filename: process.env.DB_FILE_PATH as string
+            },
+            useNullAsDefault: true,
+            pool: {
+                min: 0,
+                max: 1,
+                afterCreate: (conn: any, cb: any) => {
+                    conn.run("PRAGMA foreign_keys = ON", cb)
+                }
+            }
+        }
+    )
 }

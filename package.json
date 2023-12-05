@@ -8,7 +8,8 @@
         "build": "tsc",
         "dev": "ts-node-dev ./src/index.ts",
         "test": "jest",
-        "coverage": "jest --collect-coverage"
+        "coverage": "jest --collect-coverage",
+        "update-database": "ts-node ../scriptUpdateDatabase.ts"
     },
     "keywords": [],
     "author": "",
