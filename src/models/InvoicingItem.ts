@@ -5,6 +5,9 @@ export class InvoicingItem {
         private codProduct: number,
         private codSale: number,
         private nameProduct: string,
+        private nameSubgroup: string,
+        private codSubgroup: number,
+        private baseProfit: number,
         private quantity: number,
         private quantityReturned: number,
         private amountSale: number,
@@ -20,6 +23,9 @@ export class InvoicingItem {
             codProduct: this.codProduct,
             codSale: this.codSale,
             nameProduct: this.nameProduct,
+            nameSubgroup: this.nameSubgroup,
+            codSubgroup: this.codSubgroup,
+            baseProfit: this.baseProfit,
             quantity: this.quantity,
             quantityReturned: this.quantityReturned,
             amountSale: this.amountSale,
@@ -41,6 +47,18 @@ export class InvoicingItem {
 
     public getNameProduct = (): string => {
         return this.nameProduct
+    }
+
+    public getNameSubgroup = (): string => {
+        return this.nameSubgroup
+    }
+
+    public getCodSubgroup = (): number => {
+        return this.codSubgroup
+    }
+
+    public getBaseProfit = (): number => {
+        return this.baseProfit
     }
 
     public getQuantity = (): number => {
@@ -81,6 +99,9 @@ export interface InvoicingItemModel {
     codProduct: number,
     codSale: number,
     nameProduct: string,
+    nameSubgroup: string,
+    codSubgroup: number,
+    baseProfit: number,
     quantity: number,
     quantityReturned: number,
     amountSale: number,

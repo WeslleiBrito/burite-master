@@ -2,6 +2,9 @@ export interface InvoicingItemDB {
     produto: number
     venda: number
     descricao: string
+    prod_dsubgrupo: string
+    prod_subgrupo: number
+    plucro: number
     qtd: number
     qtd_devolvida: number
     vrunitario: number
@@ -25,4 +28,20 @@ export interface TotalValuesDB {
     updated_at: string,
     discount_percentage: number,
     variable_expense_percentage: number
+}
+
+
+export interface SubgroupFixedModel {
+    codSubgroup: number,
+    nameSubroup: string,
+    amountQuantity: number,
+    amountInvoicing: number,
+    amountCost: number,
+    amountDiscount: number,
+    amountFixed: number,
+    fixedUnitExpense: number,
+    discountPercentage: number,
+    invoicingPercentage: number,
+    costPercentage: number
+
 }
