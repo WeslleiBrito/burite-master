@@ -33,7 +33,7 @@ export class InvoicingDatabase extends BaseDatabase{
 
     public getSaleItemByDate = async (input: {initialDate: string, finalDate: string}): Promise<InvoicingItemDB[]> => {
         const result: InvoicingItemDB[] = await InvoicingDatabase.connection(InvoicingDatabase.TABLE_SALE_ITEM)
-        .whereBetween('dtvenda', [input.initialDate, input.finalDate])
+        .whereBetween('dtvenda', ['2023-11-01', '2023-11-30'])
         .innerJoin('produto', 'venda_item.produto', 'produto.prod_cod')
         .innerJoin('subgrupo_produtos', 'produto.prod_subgrupo', 'subgrupo_produtos.subprod_cod')
         .select(

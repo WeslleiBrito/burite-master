@@ -1,6 +1,9 @@
 import { InvoicingDatabase } from "../database/InvoicingDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { InvoicingItem, InvoicingItemModel } from "../models/InvoicingItem";
+import { ResumeSubgroup } from "../models/ResumeSubgroups";
+import { roundValues } from "../services/RoundValues";
+import { ResumeSubgroupModel } from "../types/types";
 
 
 
@@ -11,11 +14,12 @@ export class InvoicingBusiness {
         private updateTotalValuesDatabase: UpdateTotalValuesDatabase
     ){}
     
-    public getAllSaleItem = async (): Promise<{[key: string]: InvoicingItemModel[]}> => {
+    public getAllSaleItem = async (): Promise<{[key: string]: ResumeSubgroupModel}> => {
         
         const result = await this.invoicingDatabase.getSaleItemAll()
+        const [totals] = await this.updateTotalValuesDatabase.findTotalValue()
 
-        const resumeSubgroup: {[key: string]: InvoicingItemModel[]} = {}
+        const resumeSubgroup: {[key: string]: ResumeSubgroupModel} = {}
         
         const itens = result.map((item): InvoicingItemModel => {
             
@@ -46,8 +50,39 @@ export class InvoicingBusiness {
                 const itensSubgrupo = itens.filter((sale) => {
                     return sale.nameSubgroup === item.nameSubgroup
                 })
+            
+                const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
+                const quantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
+                const amountInvoicing = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.amountSale / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
+                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - quantityReturned)
+                const amountDiscount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.discount / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
+                const amountFixed = (amountInvoicing / totals.invoicing) * totals.fixed_expenses
+                const fixedUnitExpense = amountFixed / (amountQuantity - quantityReturned)
+                const subgroupProfit = amountInvoicing - (amountCost + amountFixed + (amountInvoicing * totals.variable_expense_percentage))
+                const discountPercentage = (amountDiscount + amountInvoicing) / amountInvoicing
+                const invoicingPercentage = amountInvoicing / totals.invoicing
+                const costPercentage = amountCost / totals.cost
+                const fixedExpensePercentage = amountFixed / totals.fixed_expenses
+                const subgroupProfitPercentage = subgroupProfit / totals.general_monetary_profit
 
-                resumeSubgroup[item.nameSubgroup] = itensSubgrupo
+                const newResumeSubgroup = new ResumeSubgroup (
+                    item.codSubgroup,
+                    item.nameSubgroup,
+                    roundValues('round', amountQuantity - quantityReturned, 2),
+                    roundValues('round', amountInvoicing, 2),
+                    roundValues('round', amountCost, 2),
+                    roundValues('round', amountDiscount, 2),
+                    roundValues('round', amountFixed, 2),
+                    roundValues('round', fixedUnitExpense, 2),
+                    roundValues('round', subgroupProfit, 2),
+                    roundValues('round', discountPercentage, 2),
+                    roundValues('round', invoicingPercentage, 2),
+                    roundValues('round', costPercentage, 2),
+                    roundValues('round', fixedExpensePercentage, 2),
+                    roundValues('round', subgroupProfitPercentage, 2)
+                    
+                )
+                resumeSubgroup[item.nameSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
             }
         })
 
@@ -55,12 +90,12 @@ export class InvoicingBusiness {
         
     }
 
-    public getSaleItemById = async (input: {initialDate: string, finalDate: string}): Promise<{[key: string]: InvoicingItemModel & {fixedExpense: number}[]}> => {
+    public getSaleItemByDate = async (input: {initialDate: string, finalDate: string}): Promise<{[key: string]: ResumeSubgroupModel}> => {
 
-        const result = await this.invoicingDatabase.getSaleItemByDate(input)
-        const globalValues = await this.updateTotalValuesDatabase.findTotalValue()
+        const result = await this.invoicingDatabase.getSaleItemByDate({initialDate: input.initialDate, finalDate: input.finalDate})
+        const [totals] = await this.updateTotalValuesDatabase.findTotalValueMonthly()
 
-        const resumeSubgroup: {[key: string]: InvoicingItemModel[]} = {}
+        const resumeSubgroup: {[key: string]: ResumeSubgroupModel} = {}
         
         const itens = result.map((item): InvoicingItemModel => {
             
@@ -91,10 +126,39 @@ export class InvoicingBusiness {
                 const itensSubgrupo = itens.filter((sale) => {
                     return sale.nameSubgroup === item.nameSubgroup
                 })
-                
-                const subgroupBillingAmount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.amountSale, 0)
+            
+                const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
+                const quantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
+                const amountInvoicing = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.amountSale / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
+                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - quantityReturned)
+                const amountDiscount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.discount / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
+                const amountFixed = (amountInvoicing / totals.invoicing) * totals.fixed_expenses
+                const fixedUnitExpense = amountFixed / (amountQuantity - quantityReturned)
+                const subgroupProfit = amountInvoicing - (amountCost + amountFixed + (amountInvoicing * totals.variable_expense_percentage))
+                const discountPercentage = amountDiscount / amountInvoicing
+                const invoicingPercentage = amountInvoicing / totals.invoicing
+                const costPercentage = amountCost / totals.cost
+                const fixedExpensePercentage = amountFixed / totals.fixed_expenses
+                const subgroupProfitPercentage = subgroupProfit / totals.general_monetary_profit
 
-                resumeSubgroup[item.nameSubgroup] = itensSubgrupo
+                const newResumeSubgroup = new ResumeSubgroup (
+                    item.codSubgroup,
+                    item.nameSubgroup,
+                    roundValues('round', amountQuantity - quantityReturned, 2),
+                    roundValues('round', amountInvoicing, 2),
+                    roundValues('round', amountCost, 2),
+                    roundValues('round', amountDiscount, 2),
+                    roundValues('round', amountFixed, 2),
+                    roundValues('round', fixedUnitExpense, 2),
+                    roundValues('round', subgroupProfit, 2),
+                    roundValues('round', discountPercentage, 2),
+                    roundValues('round', invoicingPercentage, 2),
+                    roundValues('round', costPercentage, 2),
+                    roundValues('round', fixedExpensePercentage, 2),
+                    roundValues('round', subgroupProfitPercentage, 2)
+                    
+                )
+                resumeSubgroup[item.nameSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
             }
         })
 

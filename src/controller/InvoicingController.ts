@@ -37,7 +37,7 @@ export class InvoicingController {
         try {
            
 
-            const output = await this.invoicingBusiness.getSaleItemById({initialDate: '2023-12-01', finalDate: '2023-12-06'})
+            const output = await this.invoicingBusiness.getSaleItemByDate({initialDate: '2023-12-01', finalDate: '2023-12-06'})
 
             res.status(200).send(output)
 

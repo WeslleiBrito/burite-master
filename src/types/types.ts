@@ -31,17 +31,36 @@ export interface TotalValuesDB {
 }
 
 
-export interface SubgroupFixedModel {
+export interface ResumeSubgroupModel {
     codSubgroup: number,
-    nameSubroup: string,
+    nameSubgroup: string,
     amountQuantity: number,
     amountInvoicing: number,
     amountCost: number,
     amountDiscount: number,
     amountFixed: number,
     fixedUnitExpense: number,
+    subgroupProfit: number,
     discountPercentage: number,
     invoicingPercentage: number,
-    costPercentage: number
+    costPercentage: number,
+    fixedExpensePercentage: number,
+    subgroupProfitPercentage: number
+}
 
+export interface ResumeSubgroupDB {
+    cod_subgroup: number,
+    name_subroup: string,
+    amount_quantity: number,
+    amount_invoicing: number,
+    amount_cost: number,
+    amount_discount: number,
+    amount_fixed: number,
+    fixed_unit_expense: number,
+    subgroup_profit: number,
+    discount_percentage: number,
+    invoicing_percentage: number,
+    cost_percentage: number,
+    fixed_expense_percentage: number,
+    subgroup_profit_percentage: number
 }
