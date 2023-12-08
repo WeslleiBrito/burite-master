@@ -11,6 +11,7 @@ export class ResumeSubgroup {
         private amountCost: number,
         private amountDiscount: number,
         private amountFixed: number,
+        private amountVariableExpense: number,
         private fixedUnitExpense: number,
         private subgroupProfit: number,
         private discountPercentage: number,
@@ -29,6 +30,7 @@ export class ResumeSubgroup {
             amountCost: this.amountCost,
             amountDiscount: this.amountDiscount,
             amountFixed: this.amountFixed,
+            amountVariableExpense: this.amountVariableExpense,
             fixedUnitExpense: this.fixedUnitExpense,
             subgroupProfit: this.subgroupProfit,
             discountPercentage: this.discountPercentage,
@@ -64,6 +66,10 @@ export class ResumeSubgroup {
 
     public getAmountFixed = (): number => {
         return this.amountFixed
+    }
+
+    public getAmountVariableExpense = (): number => {
+        return this.amountVariableExpense
     }
 
     public getFixedUnitExpense = (): number => {

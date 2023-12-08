@@ -40,6 +40,7 @@ export interface ResumeSubgroupModel {
     amountDiscount: number,
     amountFixed: number,
     fixedUnitExpense: number,
+    amountVariableExpense: number,
     subgroupProfit: number,
     discountPercentage: number,
     invoicingPercentage: number,

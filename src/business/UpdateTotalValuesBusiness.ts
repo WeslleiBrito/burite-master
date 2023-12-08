@@ -17,7 +17,7 @@ export class UpdateTotalValuesBusiness {
 
     public updateDatabase = async (): Promise<void> => {
 
-        const invoicing = await this.invoicingDatabase.getSaleItemAll()
+        const invoicing = await this.invoicingDatabase.getItensInvoicingSubgroupAll()
 
         const amountInvoicing = invoicing.reduce((accumulator, currentValue) => accumulator + currentValue.total, 0)
         const amountCost = invoicing.reduce((accumulator, currentValue) => accumulator + currentValue.vrcusto_composicao * (currentValue.qtd - currentValue.qtd_devolvida), 0)

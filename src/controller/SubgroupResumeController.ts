@@ -1,21 +1,30 @@
 import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { BaseError } from "../errors/BaseError";
-import { InvoicingBusiness } from "../business/InvoicingBusiness";
+import { SubgroupResumeBusiness } from "../business/SubgroupResumeBusiness";
+import { inputGetSubgroupSchema } from "../dtos/InputGetSubgroup.dto";
 
 
-export class InvoicingController {
+export class SubgroupResumeController {
 
     constructor(
-        private invoicingBusiness: InvoicingBusiness
+        private subgroupResumeBusiness: SubgroupResumeBusiness
     ){}
 
-    public getAllSaleItem = async (req: Request, res: Response) => {
+    public getInvoicingSubgroup = async (req: Request, res: Response) => {
 
         try {
            
+            const { initialDate, finalDate } = req.body
 
-            const output = await this.invoicingBusiness.getAllSaleItem()
+            const input = inputGetSubgroupSchema.parse(
+                {
+                    initialDate,
+                    finalDate
+                }
+            )
+
+            const output = await this.subgroupResumeBusiness.getInvoicingSubgroup(input)
 
             res.status(200).send(output)
 
@@ -37,7 +46,7 @@ export class InvoicingController {
         try {
            
 
-            const output = await this.invoicingBusiness.getSaleItemByDate({initialDate: '2023-12-01', finalDate: ''})
+            const output = await this.subgroupResumeBusiness.getSaleItemByDate({initialDate: '2023-12-01', finalDate: ''})
 
             res.status(200).send(output)
 

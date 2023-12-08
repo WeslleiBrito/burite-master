@@ -4,6 +4,7 @@ import dontenv from 'dotenv'
 import { invoicingRouter } from './router/invoicingRouter'
 import { expensesRouter } from './router/expensesRouter'
 import { updateTotalValuesRouter } from './router/updateTotalValuesRouter'
+import { subgroupResumeRouter } from './router/subgroupResumeRouter'
 dontenv.config()
 
 const app = express()
@@ -17,3 +18,4 @@ app.listen(Number(process.env.PORT || 3003), () => {
 app.use('/invoicing', invoicingRouter)
 app.use('/expenses', expensesRouter)
 app.use('/total-value', updateTotalValuesRouter)
+app.use('/subgroup', subgroupResumeRouter)

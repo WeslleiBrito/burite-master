@@ -1,22 +1,36 @@
 import { InvoicingDatabase } from "../database/InvoicingDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
+import { inputGetSubgroupDTO } from "../dtos/InputGetSubgroup.dto";
 import { InvoicingItem, InvoicingItemModel } from "../models/InvoicingItem";
 import { ResumeSubgroup } from "../models/ResumeSubgroups";
 import { roundValues } from "../services/RoundValues";
-import { ResumeSubgroupModel } from "../types/types";
+import { InvoicingItemDB, ResumeSubgroupModel } from "../types/types";
 
 
 
-export class InvoicingBusiness {
+export class SubgroupResumeBusiness {
 
     constructor(
         private invoicingDatabase: InvoicingDatabase,
         private updateTotalValuesDatabase: UpdateTotalValuesDatabase
     ){}
     
-    public getAllSaleItem = async (): Promise<{[key: string]: ResumeSubgroupModel}> => {
+    public getInvoicingSubgroup = async (input: inputGetSubgroupDTO): Promise<{[key: string]: ResumeSubgroupModel}> => {
         
-        const result = await this.invoicingDatabase.getItensInvoicingSubgroupAll()
+        const {initialDate, finalDate} = input
+
+        let result: InvoicingItemDB[] = []
+
+        if(initialDate && finalDate){
+            result = await this.invoicingDatabase.getSaleItemByDate({initialDate, finalDate})
+        }else if(initialDate){
+            result = await this.invoicingDatabase.getItensInvoicingSubgroupByInitialDate(initialDate)
+        }else if(finalDate){
+            result = await this.invoicingDatabase.getItensInvoicingSubgroupByFinalDate(finalDate)
+        }else{
+            result = await this.invoicingDatabase.getItensInvoicingSubgroupAll()
+        }
+
         const [totals] = await this.updateTotalValuesDatabase.findTotalValue()
 
         const resumeSubgroup: {[key: string]: ResumeSubgroupModel} = {}
