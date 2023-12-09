@@ -5,7 +5,7 @@ export class ExpensesDatabase extends BaseDatabase {
 
     public static TABLE_TIPO_CONTA = "tipoconta"
 
-    public getExpensesFixed = async (input: {initialDate: string, finalDate: string} | undefined): Promise<{rateio_vlrparcela: number}[]> => {
+    public getExpensesFixedByDateInitialDateFinal = async (input: {initialDate: string, finalDate: string} | undefined): Promise<{rateio_vlrparcela: number}[]> => {
 
         if(input){
             const {initialDate, finalDate} = input
@@ -21,7 +21,8 @@ export class ExpensesDatabase extends BaseDatabase {
 
     }
 
-    public getExpensesVariable = async (input: {initialDate: string, finalDate: string} | undefined): Promise<{rateio_vlrparcela: number}[]> => {
+
+    public getExpensesVaribalByDateInitialDateFinal = async (input: {initialDate: string, finalDate: string} | undefined): Promise<{rateio_vlrparcela: number}[]> => {
 
         if(input){
             const {initialDate, finalDate} = input

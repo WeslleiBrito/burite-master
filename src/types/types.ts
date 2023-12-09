@@ -27,7 +27,8 @@ export interface TotalValuesDB {
     created_at: string,
     updated_at: string,
     discount_percentage: number,
-    variable_expense_percentage: number
+    variable_expense_percentage: number,
+    number_of_months: number
 }
 
 

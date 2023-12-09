@@ -8,8 +8,8 @@ export class ExpensesBusiness {
 
     public getExpenses = async () => {
         
-        const resultFixed = await this.expensesDatabase.getExpensesFixed(undefined)
-        const resultVariable = await this.expensesDatabase.getExpensesVariable(undefined)
+        const resultFixed = await this.expensesDatabase.getExpensesFixedByDateInitialDateFinal(undefined)
+        const resultVariable = await this.expensesDatabase.getExpensesVaribalByDateInitialDateFinal(undefined)
 
         const amountExpenseFixed = resultFixed.map((expense) => {
             return expense.rateio_vlrparcela

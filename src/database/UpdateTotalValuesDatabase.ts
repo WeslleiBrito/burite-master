@@ -11,7 +11,6 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
 
         const result: TotalValuesDB[] = await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES)
         
-
         return result
     }
 
@@ -55,7 +54,8 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
             discount_percentage, 
             general_monetary_profit, 
             general_percentage_profit, 
-            variable_expense_percentage 
+            variable_expense_percentage,
+            number_of_months 
         } = input
 
         await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES).update(
@@ -69,7 +69,8 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
                 discount_percentage,
                 general_monetary_profit,
                 general_percentage_profit,
-                variable_expense_percentage
+                variable_expense_percentage,
+                number_of_months
             }
         ).where({ id })
 
