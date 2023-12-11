@@ -47,7 +47,8 @@ export interface ResumeSubgroupModel {
     invoicingPercentage: number,
     costPercentage: number,
     fixedExpensePercentage: number,
-    subgroupProfitPercentage: number
+    subgroupProfitPercentage: number,
+    updatedAt: string
 }
 
 export interface ResumeSubgroupDB {
@@ -58,11 +59,13 @@ export interface ResumeSubgroupDB {
     amount_cost: number,
     amount_discount: number,
     amount_fixed: number,
+    amount_variable: number,
     fixed_unit_expense: number,
     subgroup_profit: number,
     discount_percentage: number,
     invoicing_percentage: number,
     cost_percentage: number,
     fixed_expense_percentage: number,
-    subgroup_profit_percentage: number
+    subgroup_profit_percentage: number,
+    updated_at: string
 }

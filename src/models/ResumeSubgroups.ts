@@ -18,7 +18,8 @@ export class ResumeSubgroup {
         private invoicingPercentage: number,
         private costPercentage: number,
         private fixedExpensePercentage: number,
-        private subgroupProfitPercentage: number
+        private subgroupProfitPercentage: number,
+        private updatedAt: string
     ){}
     
     public getAllResumeSubgroup = (): ResumeSubgroupModel => {
@@ -37,7 +38,8 @@ export class ResumeSubgroup {
             invoicingPercentage: this.invoicingPercentage,
             costPercentage: this.costPercentage,
             fixedExpensePercentage: this.fixedExpensePercentage,
-            subgroupProfitPercentage: this.subgroupProfitPercentage
+            subgroupProfitPercentage: this.subgroupProfitPercentage,
+            updatedAt: this.updatedAt
         }
     }
     public getCodSubgroup = (): number => {
@@ -98,6 +100,10 @@ export class ResumeSubgroup {
 
     public getSubgroupProfitPercentage = (): number => {
         return this.subgroupProfitPercentage
+    }
+
+    public getUpdatedAt = (): string => {
+        return this.updatedAt
     }
 
 }

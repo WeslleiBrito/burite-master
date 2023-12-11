@@ -71,10 +71,10 @@ export class UpdateTotalValuesBusiness {
         if(totalVelueExist.length > 0){
 
             const {id, created_at} = totalVelueExist[0]
-
             resume.id = id
             resume.created_at = created_at
 
+            
             await this.updateTotalValuesDatabase.updateTotalValue(resume)
 
         }else{
