@@ -1,4 +1,5 @@
 import { ExpensesDatabase } from "../database/ExpensesDatabase";
+import { InputDateDTO } from "../dtos/InputDate.dto";
 
 
 export class ExpensesBusiness {
@@ -23,5 +24,12 @@ export class ExpensesBusiness {
             fixed: Math.ceil(amountExpenseFixed),
             variable: Math.ceil(amountExpenseVariable)
         }
+    }
+
+    public getExpenseFixed = async (input: InputDateDTO) => {
+        const final = input.final?.toISOString()
+        const initial = input.initial?.toISOString()
+
+        
     }
 }
