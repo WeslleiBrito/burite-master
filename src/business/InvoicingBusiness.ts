@@ -1,9 +1,10 @@
 import { InvoicingDatabase } from "../database/InvoicingDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
+import { InputDateDTO } from "../dtos/InputDate.dto";
 import { InvoicingItem, InvoicingItemModel } from "../models/InvoicingItem";
 import { ResumeSubgroup } from "../models/ResumeSubgroups";
 import { roundValues } from "../services/RoundValues";
-import { ResumeSubgroupModel } from "../types/types";
+import { InvoicingItemDB, ResumeSubgroupModel } from "../types/types";
 
 
 
@@ -52,13 +53,13 @@ export class InvoicingBusiness {
                 })
             
                 const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
-                const quantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
+                const amountQuantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
                 const amountInvoicing = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.amountSale / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
-                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - quantityReturned)
+                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - amountQuantityReturned)
                 const amountDiscount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.discount / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
                 const amountFixed = (amountInvoicing / totals.invoicing) * totals.fixed_expenses
                 const amountVariableExpense = amountInvoicing * totals.variable_expense_percentage
-                const fixedUnitExpense = amountFixed / (amountQuantity - quantityReturned)
+                const fixedUnitExpense = amountFixed / (amountQuantity - amountQuantityReturned)
                 const subgroupProfit = amountInvoicing - (amountCost + amountFixed + (amountInvoicing * totals.variable_expense_percentage))
                 const discountPercentage = amountDiscount / (amountDiscount + amountInvoicing)
                 const invoicingPercentage = amountInvoicing / totals.invoicing
@@ -69,7 +70,8 @@ export class InvoicingBusiness {
                 const newResumeSubgroup = new ResumeSubgroup (
                     item.codSubgroup,
                     item.nameSubgroup,
-                    roundValues('round', amountQuantity - quantityReturned, 2),
+                    roundValues('round', amountQuantity - amountQuantityReturned, 2),
+                    roundValues('round', amountQuantityReturned, 2),
                     roundValues('round', amountInvoicing, 2),
                     roundValues('round', amountCost, 2),
                     roundValues('round', amountDiscount, 2),
@@ -131,13 +133,13 @@ export class InvoicingBusiness {
                 })
             
                 const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
-                const quantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
+                const amountQuantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
                 const amountInvoicing = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.amountSale / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
-                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - quantityReturned)
+                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - amountQuantityReturned)
                 const amountDiscount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.discount / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
                 const amountVariableExpense = amountInvoicing * totals.variable_expense_percentage
                 const amountFixed = (amountInvoicing / totals.invoicing) * totals.fixed_expenses
-                const fixedUnitExpense = amountFixed / (amountQuantity - quantityReturned)
+                const fixedUnitExpense = amountFixed / (amountQuantity - amountQuantityReturned)
                 const subgroupProfit = amountInvoicing - (amountCost + amountFixed + (amountInvoicing * totals.variable_expense_percentage))
                 const discountPercentage = amountDiscount / amountInvoicing
                 const invoicingPercentage = amountInvoicing / totals.invoicing
@@ -148,7 +150,8 @@ export class InvoicingBusiness {
                 const newResumeSubgroup = new ResumeSubgroup (
                     item.codSubgroup,
                     item.nameSubgroup,
-                    roundValues('round', amountQuantity - quantityReturned, 2),
+                    roundValues('round', amountQuantity - amountQuantityReturned, 2),
+                    roundValues('round', amountQuantityReturned, 2),
                     roundValues('round', amountInvoicing, 2),
                     roundValues('round', amountCost, 2),
                     roundValues('round', amountDiscount, 2),
@@ -170,5 +173,35 @@ export class InvoicingBusiness {
 
         return resumeSubgroup
         
+    }
+
+    public getSaleItem = async (input?: InputDateDTO) => {
+        
+        let initial: string | undefined
+        let final: string | undefined 
+        let searchDatabase: InvoicingItemDB[] = []
+
+        if(!input || (input && (!input.initial && !input.final))){
+
+            initial = "1970-01-01"
+            final = new Date().toISOString()
+
+            searchDatabase = await this.invoicingDatabase.getSaleItemByDate({initialDate: initial, finalDate: final})
+
+        }else if(input && (input.initial && !input.final)){
+
+            final = new Date().toISOString()
+            searchDatabase = await this.invoicingDatabase.getSaleItemByDate({initialDate: input.initial.toISOString(), finalDate: final})
+
+        }else if(input && (!input.initial && input.final)){
+
+            initial = "1970-01-01"
+            searchDatabase = await this.invoicingDatabase.getSaleItemByDate({initialDate: initial, finalDate: input.final.toISOString()})
+           
+        }else if (input && (input.initial && input.final)){
+            searchDatabase = await this.invoicingDatabase.getSaleItemByDate({initialDate: input.initial.toISOString(), finalDate: input.final.toISOString()})
+        }
+
+        return searchDatabase
     }
 }

@@ -10,7 +10,7 @@ import { InvoicingDatabase } from "../database/InvoicingDatabase"
 export const updateTotalValuesRouter = express.Router()
 
 
-const newupdateTotalValuesRouterController = new UpdateTotalValuesController (
+const newUpdateTotalValuesRouterController = new UpdateTotalValuesController (
     new UpdateTotalValuesBusiness(
         new ExpensesDatabase(),
         new InvoicingDatabase(),
@@ -19,4 +19,4 @@ const newupdateTotalValuesRouterController = new UpdateTotalValuesController (
     )
 )
 
-updateTotalValuesRouter.get('/', newupdateTotalValuesRouterController.getTotalValues)
+updateTotalValuesRouter.get('/', newUpdateTotalValuesRouterController.getTotalValues)

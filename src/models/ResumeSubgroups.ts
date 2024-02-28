@@ -7,6 +7,7 @@ export class ResumeSubgroup {
         private codSubgroup: number,
         private nameSubgroup: string,
         private amountQuantity: number,
+        private amountQuantityRetorned: number,
         private amountInvoicing: number,
         private amountCost: number,
         private amountDiscount: number,
@@ -27,6 +28,7 @@ export class ResumeSubgroup {
             codSubgroup: this.codSubgroup,
             nameSubgroup: this.nameSubgroup,
             amountQuantity: this.amountQuantity,
+            amountQuantityReturned: this.amountQuantityRetorned,
             amountInvoicing: this.amountInvoicing,
             amountCost: this.amountCost,
             amountDiscount: this.amountDiscount,
@@ -52,6 +54,9 @@ export class ResumeSubgroup {
 
     public getAmountQuantity = (): number => {
         return this.amountQuantity
+    }
+    public getAmountQuantityRetorned = (): number => {
+        return this.amountQuantityRetorned
     }
 
     public getAmountInvoincing = (): number => {

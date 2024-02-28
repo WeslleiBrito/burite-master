@@ -70,13 +70,13 @@ export class SubgroupResumeBusiness {
                 })
             
                 const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
-                const quantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
+                const amountQuantityReturned = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantityReturned, 0)
                 const amountInvoicing = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.amountSale / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
-                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - quantityReturned)
+                const amountCost = ((itensSubgrupo.reduce((accumulator, currentValue) => accumulator + (currentValue.cost * currentValue.quantity), 0)) / amountQuantity) * (amountQuantity - amountQuantityReturned)
                 const amountDiscount = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + ((currentValue.discount / currentValue.quantity) * (currentValue.quantity - currentValue.quantityReturned)), 0)
                 const amountFixed = (amountInvoicing / totals.invoicing) * totals.fixed_expenses
                 const amountVariableExpense = amountInvoicing * totals.variable_expense_percentage
-                const fixedUnitExpense = amountFixed / (amountQuantity - quantityReturned)
+                const fixedUnitExpense = amountFixed / (amountQuantity - amountQuantityReturned)
                 const subgroupProfit = amountInvoicing - (amountCost + amountFixed + (amountInvoicing * totals.variable_expense_percentage))
                 const discountPercentage = amountDiscount / (amountDiscount + amountInvoicing)
                 const invoicingPercentage = amountInvoicing / totals.invoicing
@@ -87,7 +87,8 @@ export class SubgroupResumeBusiness {
                 const newResumeSubgroup = new ResumeSubgroup (
                     item.codSubgroup,
                     item.nameSubgroup,
-                    roundValues('round', amountQuantity - quantityReturned, 2),
+                    roundValues('round', amountQuantity - amountQuantityReturned, 2),
+                    roundValues('round', amountQuantityReturned, 2),
                     roundValues('round', amountInvoicing, 2),
                     roundValues('round', amountCost, 2),
                     roundValues('round', amountDiscount, 2),
@@ -123,6 +124,7 @@ export class SubgroupResumeBusiness {
                 amountFixed: subgroup.amount_fixed,
                 amountInvoicing: subgroup.amount_invoicing,
                 amountQuantity: subgroup.amount_quantity,
+                amountQuantityReturned: subgroup.amount_quantity_returned,
                 amountVariableExpense: subgroup.amount_variable,
                 codSubgroup: subgroup.cod_subgroup,
                 costPercentage: subgroup.cost_percentage,
@@ -130,15 +132,17 @@ export class SubgroupResumeBusiness {
                 fixedExpensePercentage: subgroup.fixed_expense_percentage,
                 fixedUnitExpense: subgroup.fixed_unit_expense,
                 invoicingPercentage: subgroup.invoicing_percentage,
-                nameSubgroup: subgroup.name_subroup,
+                nameSubgroup: subgroup.name_subgroup,
                 subgroupProfit: subgroup.subgroup_profit,
                 subgroupProfitPercentage: subgroup.subgroup_profit_percentage,
-                updatedAt: subgroup.updated_at
+                updatedAt: subgroup.updated_at.toISOString()
             }
 
             return model
         })
 
+        console.log(resultModel[0]);
+        
         return resultModel
     }
 }

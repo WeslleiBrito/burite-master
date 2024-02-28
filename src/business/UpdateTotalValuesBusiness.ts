@@ -29,14 +29,30 @@ export class UpdateTotalValuesBusiness {
         const finalDate = new Date(orderDate[orderDate.length - 1].dtvenda)
 
         const months = calculateMonths(initialDate, finalDate)
-        
-        const amountInvoicing = invoicing.reduce((accumulator, currentValue) => accumulator + currentValue.total, 0)
-        const amountCost = invoicing.reduce((accumulator, currentValue) => accumulator + currentValue.vrcusto_composicao * (currentValue.qtd - currentValue.qtd_devolvida), 0)
-        const amountDiscount = invoicing.reduce((accumulator, currentValue) => accumulator + currentValue.desconto, 0)
-        
-        const resultFixed = await this.expensesDatabase.getExpensesFixedByDateInitialDateFinal(undefined)
-        const resultVariable = await this.expensesDatabase.getExpensesVaribalByDateInitialDateFinal(undefined)
 
+        let amountInvoicing: number = 0
+        let amountCost: number = 0
+        let amountDiscount: number = 0
+
+        invoicing.forEach((item) => {
+
+            if(item.qtd_devolvida > 0){
+                const qtd_final = item.qtd - item.qtd_devolvida
+                if(qtd_final > 0){
+                    amountInvoicing += (item.total / item.qtd) * qtd_final
+                    amountCost += item.vrcusto_composicao * qtd_final
+                    amountDiscount += (item.desconto / item.qtd) * qtd_final
+                }
+            }else{
+                amountInvoicing += item.total
+                amountCost += item.vrcusto_composicao * item.qtd
+                amountDiscount += item.total
+            }
+        })
+        
+        const resultFixed = await this.expensesDatabase.getExpenseFixed({initial: initialDate.toISOString(), final: finalDate.toISOString()})
+        const resultVariable = await this.expensesDatabase.getExpenseVariable({initial: initialDate.toISOString(), final: finalDate.toISOString()})
+        
         const amountExpenseFixed = resultFixed.map((expense) => {
             return expense.rateio_vlrparcela
         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)

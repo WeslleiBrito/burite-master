@@ -94,6 +94,7 @@ CREATE TABLE IF NOT EXISTS resume_subgroups (
     cod_subgroup INT NOT NULL,
     name_subroup TEXT NOT NULL,
     amount_quantity INT NOT NULL,
+    amount_quantity_retorned INT NOT NULL,
     amount_invoicing INT NOT NULL,
     amount_cost INT NOT NULL,
     amount_discount INT NOT NULL,

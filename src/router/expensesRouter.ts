@@ -14,3 +14,6 @@ const newExpensesController = new ExpensesController(
 )
 
 expensesRouter.get('/', newExpensesController.getAllExpenses)
+expensesRouter.get('/fixed', newExpensesController.getExpenseFixed)
+expensesRouter.get('/variable', newExpensesController.getExpenseVariable)
+expensesRouter.get('/expenses-all', newExpensesController.getExpenseFixedVariable)

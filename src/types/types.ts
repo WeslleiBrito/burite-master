@@ -36,6 +36,7 @@ export interface ResumeSubgroupModel {
     codSubgroup: number,
     nameSubgroup: string,
     amountQuantity: number,
+    amountQuantityReturned: number,
     amountInvoicing: number,
     amountCost: number,
     amountDiscount: number,
@@ -53,8 +54,9 @@ export interface ResumeSubgroupModel {
 
 export interface ResumeSubgroupDB {
     cod_subgroup: number,
-    name_subroup: string,
+    name_subgroup: string,
     amount_quantity: number,
+    amount_quantity_returned: number,
     amount_invoicing: number,
     amount_cost: number,
     amount_discount: number,
@@ -67,5 +69,5 @@ export interface ResumeSubgroupDB {
     cost_percentage: number,
     fixed_expense_percentage: number,
     subgroup_profit_percentage: number,
-    updated_at: string
+    updated_at: Date
 }

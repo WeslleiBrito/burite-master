@@ -14,7 +14,7 @@ export class UpdateSubgroupsValues  {
         const subgroups = await this.invoicingBusiness.getAllSaleItem()
         const updateExist = await this.updateSubgroupDatabase.getResumeSubgroup()
         const subgroupDb: ResumeSubgroupDB[] = []
-        const dateNow = new Date().toISOString()
+        const dateNow = new Date()
 
         Object.entries(subgroups).forEach((item: [string, ResumeSubgroupModel]) => {
             const [key, value] = item
@@ -27,13 +27,14 @@ export class UpdateSubgroupsValues  {
                     amount_variable: value.amountVariableExpense,
                     amount_invoicing: value.amountInvoicing,
                     amount_quantity: value.amountQuantity,
+                    amount_quantity_returned: value.amountQuantityReturned,
                     cod_subgroup: value.codSubgroup,
                     cost_percentage: value.costPercentage,
                     discount_percentage: value.discountPercentage,
                     fixed_expense_percentage: value.fixedExpensePercentage,
                     fixed_unit_expense: value.fixedUnitExpense,
                     invoicing_percentage: value.invoicingPercentage,
-                    name_subroup: value.nameSubgroup,
+                    name_subgroup: value.nameSubgroup,
                     subgroup_profit: value.subgroupProfit,
                     subgroup_profit_percentage: value.subgroupProfitPercentage,
                     updated_at: dateNow
@@ -46,8 +47,6 @@ export class UpdateSubgroupsValues  {
             await this.updateSubgroupDatabase.createResumeSubgroup(subgroupDb) 
 
         }else{
-
-            const listIds = subgroupDb.map((subgroup) => subgroup.cod_subgroup)
 
             if(updateExist.length < subgroupDb.length){
 
@@ -66,13 +65,14 @@ export class UpdateSubgroupsValues  {
                                 amount_variable: value.amountVariableExpense,
                                 amount_invoicing: value.amountInvoicing,
                                 amount_quantity: value.amountQuantity,
+                                amount_quantity_returned: value.amountQuantityReturned,
                                 cod_subgroup: value.codSubgroup,
                                 cost_percentage: value.costPercentage,
                                 discount_percentage: value.discountPercentage,
                                 fixed_expense_percentage: value.fixedExpensePercentage,
                                 fixed_unit_expense: value.fixedUnitExpense,
                                 invoicing_percentage: value.invoicingPercentage,
-                                name_subroup: value.nameSubgroup,
+                                name_subgroup: value.nameSubgroup,
                                 subgroup_profit: value.subgroupProfit,
                                 subgroup_profit_percentage: value.subgroupProfitPercentage,
                                 updated_at: dateNow
