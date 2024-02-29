@@ -111,7 +111,6 @@ export class SubgroupResumeBusiness {
         
     }
 
-
     public getSubgroup = async (): Promise<ResumeSubgroupModel[]> => {
 
         const result: ResumeSubgroupDB[] = await this.updateSubgroupsDatabase.getResumeSubgroup()
