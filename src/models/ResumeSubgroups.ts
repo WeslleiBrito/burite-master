@@ -14,6 +14,7 @@ export class ResumeSubgroup {
         private amountFixed: number,
         private amountVariableExpense: number,
         private fixedUnitExpense: number,
+        private pLucro: number,
         private subgroupProfit: number,
         private discountPercentage: number,
         private invoicingPercentage: number,
@@ -35,6 +36,7 @@ export class ResumeSubgroup {
             amountFixed: this.amountFixed,
             amountVariableExpense: this.amountVariableExpense,
             fixedUnitExpense: this.fixedUnitExpense,
+            plucro: this.pLucro,
             subgroupProfit: this.subgroupProfit,
             discountPercentage: this.discountPercentage,
             invoicingPercentage: this.invoicingPercentage,
@@ -89,6 +91,10 @@ export class ResumeSubgroup {
 
     public getDiscountPercentage = (): number => {
         return this.discountPercentage
+    }
+
+    public getPLucro = (): number => {
+        return this.pLucro
     }
     
     public getInvoicingPercentage = (): number => {

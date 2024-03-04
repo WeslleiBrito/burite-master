@@ -106,7 +106,7 @@ export class UpdateTotalValuesBusiness {
     }
 
 
-    public getValuesTotal = async () => {
+    public getValuesTotal = async (): Promise<TotalValuesDB[]> => {
 
         const search = await this.updateTotalValuesDatabase.findTotalValue()
 

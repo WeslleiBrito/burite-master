@@ -35,6 +35,7 @@ export class UpdateSubgroupsValues  {
                     fixed_unit_expense: value.fixedUnitExpense,
                     invoicing_percentage: value.invoicingPercentage,
                     name_subgroup: value.nameSubgroup,
+                    plucro: value.plucro,
                     subgroup_profit: value.subgroupProfit,
                     subgroup_profit_percentage: value.subgroupProfitPercentage,
                     updated_at: dateNow
@@ -73,6 +74,7 @@ export class UpdateSubgroupsValues  {
                                 fixed_unit_expense: value.fixedUnitExpense,
                                 invoicing_percentage: value.invoicingPercentage,
                                 name_subgroup: value.nameSubgroup,
+                                plucro: value.plucro,
                                 subgroup_profit: value.subgroupProfit,
                                 subgroup_profit_percentage: value.subgroupProfitPercentage,
                                 updated_at: dateNow
@@ -83,9 +85,11 @@ export class UpdateSubgroupsValues  {
                 })
 
                 await this.updateSubgroupDatabase.createResumeSubgroup(newSubgroup)
+            }else{
+                
+                await this.updateSubgroupDatabase.updateResumeSubgroup(subgroupDb)
             }
 
-            await this.updateSubgroupDatabase.updateResumeSubgroup(subgroupDb)
 
         }
     }
