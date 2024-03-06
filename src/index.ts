@@ -5,6 +5,7 @@ import { invoicingRouter } from './router/invoicingRouter'
 import { expensesRouter } from './router/expensesRouter'
 import { updateTotalValuesRouter } from './router/updateTotalValuesRouter'
 import { subgroupResumeRouter } from './router/subgroupResumeRouter'
+import { priceFormationRouter } from './router/priceFormationRouter'
 dontenv.config()
 
 const app = express()
@@ -19,3 +20,4 @@ app.use('/invoicing', invoicingRouter)
 app.use('/expenses', expensesRouter)
 app.use('/total-value', updateTotalValuesRouter)
 app.use('/subgroup', subgroupResumeRouter)
+app.use('/price-formation', priceFormationRouter)

@@ -73,3 +73,28 @@ export interface ResumeSubgroupDB {
     subgroup_profit_percentage: number,
     updated_at: Date
 }
+
+export interface OpenPurchasesDB {
+    num_NF: string,
+    fornecedor: string,
+    data: string,
+    item: number,
+    codigo: number,
+    prod_descricao: string,
+    un: string,
+    qtd_estoque: number,
+    vr_compra: number,
+    perc_custo: number,
+    vr_custo: number,
+    margem: number,
+    vr_venda: number,
+    desconto_max: number,
+    vrcusto_medio: number,
+    qtdentrada: number,
+    vrcompra_novo: number,
+    vrcustoagregado: number,
+    fracao: number,
+    vr_compra_fracionado: number,
+    perc_custo_NF: number,
+    vrvenda_novo: number
+}

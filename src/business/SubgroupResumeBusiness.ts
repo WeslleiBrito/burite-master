@@ -141,8 +141,6 @@ export class SubgroupResumeBusiness {
 
             return model
         })
-
-        console.log(resultModel[0]);
         
         return resultModel
     }
