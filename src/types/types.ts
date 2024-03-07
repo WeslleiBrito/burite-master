@@ -77,9 +77,11 @@ export interface ResumeSubgroupDB {
 export interface OpenPurchasesDB {
     num_NF: string,
     fornecedor: string,
+    total_nf: number,
     data: string,
     item: number,
     codigo: number,
+    prod_subgrupo: number,
     prod_descricao: string,
     un: string,
     qtd_estoque: number,
@@ -97,4 +99,11 @@ export interface OpenPurchasesDB {
     vr_compra_fracionado: number,
     perc_custo_NF: number,
     vrvenda_novo: number
+}
+
+export interface OpenPurchasesModel {
+    nf: string,
+    provider: string,
+    value: number,
+    date: Date
 }

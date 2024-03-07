@@ -1,30 +1,54 @@
 import { PriceFormationDatabase } from "../database/PriceFormationDatabase";
-import { OpenPurchasesDB } from "../types/types";
+import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
+import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
+import { NotFoundError } from "../errors/NotFoundError";
+import { OpenPurchasesDB, OpenPurchasesModel } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
-        private database: PriceFormationDatabase
+        private database: PriceFormationDatabase,
+        private databaseExpenseFixed: UpdateSubgroupsDatabase,
+        private databaseExpenseVariable: UpdateTotalValuesDatabase
     ){}
 
-    public getOpenPurchases = async () => {
+    public getOpenPurchases = async (): Promise<OpenPurchasesModel[]> => {
 
         const result = await this.database.getOpenPurchases()
 
-        const filter: OpenPurchasesDB[] = []
+        const filter: OpenPurchasesModel[] = []
 
         result.forEach((item) => {
 
-            if(!filter.find(element => element.num_NF === item.num_NF)){
-                filter.push(item)
+            if(!filter.find(purchase => purchase.nf === item.num_NF)){
+                filter.push(
+                    {
+                        nf: item.num_NF,
+                        provider: item.fornecedor,
+                        value: item.total_nf,
+                        date: new Date(item.data)
+                    }
+                )
             }
         })
 
-        return filter.map((item) => {
-            return {
-                nf: item.num_NF,
-                provider: item.fornecedor,
-                date: item.data
-            }
-        })
+        return filter
+    }
+
+    public getOpenPurchasesAll = async (): Promise<OpenPurchasesDB[]> => {
+
+        const result = await this.database.getOpenPurchases()
+
+        return result
+    }
+
+    public createPriceSale = async (codeNF: string) => {
+
+        const nfExist = await this.database.getOpenPurchaseByNF(codeNF)
+
+        if(!nfExist){
+            throw new NotFoundError('A nf informada não exite.')
+        }
+
+        const nfSale = []
     }
 }
