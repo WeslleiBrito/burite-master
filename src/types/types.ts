@@ -107,3 +107,23 @@ export interface OpenPurchasesModel {
     value: number,
     date: Date
 }
+
+export interface ProductsPrice {
+    item: number,
+    code: number,
+    nameProduct: string,
+    codeSubgroup: number,
+    unit: string,
+    costValue: number,
+    fraction: number,
+    inputQuantity: number,
+    newSalePrice: number
+}
+
+export interface NF_Price {
+    nf: string,
+    total: number,
+    date: Date,
+    provider: string
+    products: ProductsPrice[]
+}

@@ -2,7 +2,7 @@ import { PriceFormationDatabase } from "../database/PriceFormationDatabase";
 import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { NotFoundError } from "../errors/NotFoundError";
-import { OpenPurchasesDB, OpenPurchasesModel } from "../types/types";
+import { NF_Price, OpenPurchasesDB, OpenPurchasesModel, ProductsPrice } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
@@ -34,11 +34,43 @@ export class PriceFormationBusiness {
         return filter
     }
 
-    public getOpenPurchasesAll = async (): Promise<OpenPurchasesDB[]> => {
+    public getOpenPurchasesAll = async () => {
 
         const result = await this.database.getOpenPurchases()
+        const itens: NF_Price[] = []
 
-        return result
+        result.forEach(item => {
+
+            const filter = result.filter(product => {
+                return item.num_NF === product.num_NF
+            })
+
+            itens.push(
+                {
+                    nf: item.num_NF,
+                    provider: item.fornecedor,
+                    date: new Date(item.data),
+                    total: item.total_nf,
+                    products: filter.map((p) => {
+                        return {
+                            item: p.item,
+                            code: p.codigo,
+                            nameProduct: p.prod_descricao,
+                            unit:p.un,
+                            codeSubgroup: p.prod_subgrupo,
+                            costValue: p.vr_compra_fracionado,
+                            inputQuantity: p.qtdentrada,
+                            fraction: p.fracao,
+                            newSalePrice: p.vrvenda_novo
+
+                        }
+                    })
+                }
+            )
+            
+        })
+        
+        return itens
     }
 
     public createPriceSale = async (codeNF: string) => {
