@@ -82,6 +82,7 @@ export interface OpenPurchasesDB {
     item: number,
     codigo: number,
     prod_subgrupo: number,
+    prod_dsubgrupo: string,
     prod_descricao: string,
     un: string,
     qtd_estoque: number,
@@ -113,6 +114,7 @@ export interface ProductsPrice {
     code: number,
     nameProduct: string,
     codeSubgroup: number,
+    nameSubgroup: string,
     unit: string,
     costValue: number,
     fraction: number,
@@ -126,4 +128,37 @@ export interface NF_Price {
     date: Date,
     provider: string
     products: ProductsPrice[]
+}
+
+export interface ProductsNf extends ProductsPrice {
+    expenseFixedUnit: number,
+    expenseVariableUnit: number,
+    discountPercentageMax: number,
+    profitUnit: number,
+    profitPercentage: number,
+    commission: number,
+    amountCost: number,
+    amountInvoicing: number,
+    amountDiscount: number,
+    amountCommission: number,
+    amountFixedExpense: number,
+    amountVariableExepense: number,
+    amountProfit: number
+}
+
+export interface NfPurchase {
+    nf: string,
+    total: number,
+    date: Date,
+    provider: string
+    products: ProductsNf[]
+}
+
+export interface InputGeneratePrice {
+    cost: number,
+    expenseFixed: number,
+    expenseVariable: number,
+    commission: number,
+    profit: number,
+    discount: number
 }

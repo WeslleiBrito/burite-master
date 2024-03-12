@@ -10,7 +10,7 @@ export class InvoicingDatabase extends BaseDatabase{
 
         const result: InvoicingItemDB[] = await InvoicingDatabase.connection(InvoicingDatabase.TABLE_SALE_ITEM)
         .innerJoin('produto', 'venda_item.produto', 'produto.prod_cod')
-        .innerJoin('subgrupo_produtos', 'produto.prod_subgrupo', 'subgrupo_produtos.subprod_cod')
+        .leftJoin('subgrupo_produtos', 'produto.prod_subgrupo', 'subgrupo_produtos.subprod_cod')
         .select(
             'produto',
             'venda',

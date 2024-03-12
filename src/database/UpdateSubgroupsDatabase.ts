@@ -27,4 +27,5 @@ export class UpdateSubgroupsDatabase extends BaseDatabase {
 
         return result
     }
+
 }
