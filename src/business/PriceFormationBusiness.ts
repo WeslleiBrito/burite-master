@@ -3,7 +3,7 @@ import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { InputCreateNfDTO } from "../dtos/InputCreateNf.dto";
 import { NotFoundError } from "../errors/NotFoundError";
-import { InputGeneratePrice, NF_Price, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
+import { InputGeneratePrice, NF_Price, NfPurchase, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
@@ -106,7 +106,7 @@ export class PriceFormationBusiness {
         return Number(priceRound.toFixed(round))
 
     }
-    public createPriceSale = async (input: InputCreateNfDTO) => {
+    public createPriceSale = async (input: InputCreateNfDTO): Promise<NfPurchase> => {
 
         const {codeNF, commission} = input
 
@@ -168,6 +168,12 @@ export class PriceFormationBusiness {
             }
         })
 
-        return products
+        return {
+            provider: nfExist.provider,
+            nf: nfExist.nf,
+            total: nfExist.total,
+            date: nfExist.date,
+            products: products
+        }
     }
 }
