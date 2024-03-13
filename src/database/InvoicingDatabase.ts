@@ -1,4 +1,4 @@
-import { InvoicingItemDB } from "../types/types";
+import { InvoicingItemDB, Subgroup } from "../types/types";
 import { BaseDatabase } from "./BaseDatabase";
 
 

@@ -1,4 +1,4 @@
-import { ResumeSubgroupDB } from "../types/types";
+import { ResumeSubgroupDB, Subgroup } from "../types/types";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class UpdateSubgroupsDatabase extends BaseDatabase {
@@ -28,4 +28,11 @@ export class UpdateSubgroupsDatabase extends BaseDatabase {
         return result
     }
 
+    public getAllSubgroupsRegistred = async (): Promise<Subgroup[]> => {
+
+        const subgroupSearch: Subgroup[] = await UpdateSubgroupsDatabase.connection('subgrupo_produtos').select("*")
+
+        return subgroupSearch
+        
+    }
 }

@@ -3,7 +3,7 @@ import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { InputCreateNfDTO } from "../dtos/InputCreateNf.dto";
 import { NotFoundError } from "../errors/NotFoundError";
-import { InputGeneratePrice, NF_Price, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ResumeSubgroupDB } from "../types/types";
+import { InputGeneratePrice, NF_Price, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
@@ -89,7 +89,7 @@ export class PriceFormationBusiness {
             profit
         } = input
 
-        const price = (cost + expenseFixed) / 1 - (((commission + discount + profit) / 100) + expenseVariable)
+        const price = (cost + expenseFixed) / (1 - (((commission + discount + profit)) + expenseVariable))
         let round = 0
 
         if(price < 1){
@@ -101,8 +101,9 @@ export class PriceFormationBusiness {
         const mult = Math.pow(10, round)
         const valueMult = mult * price
         const priceRound = Math.ceil(valueMult) / mult
-
-        return priceRound.toFixed(round)
+        
+    
+        return Number(priceRound.toFixed(round))
 
     }
     public createPriceSale = async (input: InputCreateNfDTO) => {
@@ -119,22 +120,51 @@ export class PriceFormationBusiness {
         const expenseVariable = (await this.databaseExpenseVariable.findTotalValue())[0].variable_expense_percentage
         const fixedExpenses = await this.databaseExpenseFixed.getResumeSubgroup()
 
-        const products = nfExist.products.map((product) => {
+        const products: ProductsNf[] = nfExist.products.map((product) => {
             const subgroup = fixedExpenses.find((subgroupItem) => subgroupItem.cod_subgroup === product.codeSubgroup) as ResumeSubgroupDB
 
             const dataPrice: InputGeneratePrice = {
-                commission: commission || 1,
+                commission: (commission || 1) / 100,
                 cost: product.costValue,
-                discount: subgroup.discount_percentage > 15 ? subgroup.discount_percentage : 15,
+                discount: subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
                 expenseFixed: subgroup.fixed_unit_expense,
                 expenseVariable: expenseVariable,
-                profit: subgroup.plucro
+                profit: subgroup.plucro / 100
             }
-            console.log(product.nameProduct);
-           
+            
+            const newSalePrice = this.generatePrice(dataPrice)
+            const expenseVariableUnit = Number((expenseVariable * newSalePrice).toFixed(2))
+            const discountValueMax = Number(((subgroup.discount_percentage * newSalePrice)).toFixed(2))
+            const com = Number((commission || 1 * newSalePrice).toFixed(2)) / 100
+            const profitUnit = Number((newSalePrice - (
+                product.costValue + 
+                subgroup.fixed_unit_expense +
+                expenseVariableUnit +
+                com + 
+                discountValueMax
+            )).toFixed(2))
+
             return {
+                code: product.code,
                 nameProduct: product.nameProduct,
-                newSalePrice: this.generatePrice(dataPrice)
+                codeSubgroup: product.codeSubgroup,
+                costValue: product.costValue,
+                fraction: product.fraction,
+                inputQuantity: product.inputQuantity,
+                item: product.item,
+                nameSubgroup: product.nameSubgroup,
+                newSalePrice: newSalePrice,
+                unit: product.unit,
+                amountCost: Number((product.inputQuantity * product.costValue).toFixed(2)),
+                amountInvoicing: Number((product.inputQuantity * newSalePrice).toFixed(2)),
+                commission: com,
+                discountPercentageMax: subgroup.discount_percentage,
+                discountValueMax,
+                expenseFixedUnit: subgroup.fixed_unit_expense,
+                expenseVariableUnit,
+                profitUnit,
+                profitPercentage: Number((profitUnit / newSalePrice).toFixed(2))
+
             }
         })
 

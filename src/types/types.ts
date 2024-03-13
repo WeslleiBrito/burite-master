@@ -134,16 +134,12 @@ export interface ProductsNf extends ProductsPrice {
     expenseFixedUnit: number,
     expenseVariableUnit: number,
     discountPercentageMax: number,
+    discountValueMax: number,
     profitUnit: number,
     profitPercentage: number,
     commission: number,
     amountCost: number,
     amountInvoicing: number,
-    amountDiscount: number,
-    amountCommission: number,
-    amountFixedExpense: number,
-    amountVariableExepense: number,
-    amountProfit: number
 }
 
 export interface NfPurchase {
@@ -161,4 +157,14 @@ export interface InputGeneratePrice {
     commission: number,
     profit: number,
     discount: number
+}
+
+export interface Subgroup {
+    subprod_cod: number,
+    subprod_grupo: number,
+    subprod_descricao: string,
+    ncm: string,
+    plucro: number,
+    pcusto: number,
+    gfiscal: number
 }
