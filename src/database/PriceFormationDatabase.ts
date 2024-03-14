@@ -1,9 +1,10 @@
-import { OpenPurchasesDB } from "../types/types";
+import { OpenPurchasesDB, ProductDB } from "../types/types";
 import { BaseDatabase } from "./BaseDatabase";
 
 export class PriceFormationDatabase extends BaseDatabase {
 
     public static TABLE_SALE_ITEM = "formacao_preco"
+    public static TABLE_PRODUCT = "produto"
 
     public getOpenPurchases = async (): Promise<OpenPurchasesDB[]> => {
     
@@ -88,7 +89,20 @@ export class PriceFormationDatabase extends BaseDatabase {
         return result.length === 0 ? undefined : result
     }
 
-        
+    public getProductsByCode = async (input: number[]): Promise<ProductDB[]> => {
+
+      const result: ProductDB[] = await PriceFormationDatabase.connection(PriceFormationDatabase.TABLE_PRODUCT).whereIn(
+        "prod_cod",
+        input
+      ).select(
+        "prod_cod as codeProduct",
+        "prod_descricao as nameProduct",
+        "prod_subgrupo as codeSubgroup"
+      )
+
+      return result
+
+    }   
     
     
 }
