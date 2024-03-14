@@ -88,7 +88,7 @@ export class PriceFormationBusiness {
             expenseVariable,
             profit
         } = input
-
+        
         const price = (cost + expenseFixed) / (1 - (((commission + discount + profit)) + expenseVariable))
         let round = 0
 
@@ -103,7 +103,7 @@ export class PriceFormationBusiness {
         const priceRound = Math.ceil(valueMult) / mult
         
     
-        return Number(priceRound.toFixed(round))
+        return Number(price.toFixed(round))
 
     }
     public createPriceSale = async (input: InputCreateNfDTO): Promise<NfPurchase> => {
@@ -122,6 +122,14 @@ export class PriceFormationBusiness {
 
         const products: ProductsNf[] = nfExist.products.map((product) => {
             const subgroup = fixedExpenses.find((subgroupItem) => subgroupItem.cod_subgroup === product.codeSubgroup) as ResumeSubgroupDB
+            let profit = 0 
+
+            if(subgroup.discount_percentage < 0.3){
+
+                const profitSubgroup = subgroup.plucro / 100  
+                profit = 0.3 - subgroup.discount_percentage > profitSubgroup ? profitSubgroup : 0.3 - subgroup.discount_percentage
+            }
+
 
             const dataPrice: InputGeneratePrice = {
                 commission: (commission || 1) / 100,
@@ -129,18 +137,20 @@ export class PriceFormationBusiness {
                 discount: subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
                 expenseFixed: subgroup.fixed_unit_expense,
                 expenseVariable: expenseVariable,
-                profit: subgroup.plucro / 100
+                profit: profit
             }
+        
             
             const newSalePrice = this.generatePrice(dataPrice)
             const expenseVariableUnit = Number((expenseVariable * newSalePrice).toFixed(2))
             const discountValueMax = Number(((subgroup.discount_percentage * newSalePrice)).toFixed(2))
             const com = Number((commission || 1 * newSalePrice).toFixed(2)) / 100
+            
             const profitUnit = Number((newSalePrice - (
                 product.costValue + 
                 subgroup.fixed_unit_expense +
                 expenseVariableUnit +
-                com + 
+                com +
                 discountValueMax
             )).toFixed(2))
 
@@ -163,7 +173,7 @@ export class PriceFormationBusiness {
                 expenseFixedUnit: subgroup.fixed_unit_expense,
                 expenseVariableUnit,
                 profitUnit,
-                profitPercentage: Number((profitUnit / newSalePrice).toFixed(2))
+                profitPercentage: Number((profitUnit / newSalePrice).toFixed(3))
 
             }
         })
