@@ -3,6 +3,8 @@ import { ZodError } from "zod";
 import { BaseError } from "../errors/BaseError";
 import { PriceFormationBusiness } from "../business/PriceFormationBusiness";
 import { InputCreateNfSchema } from "../dtos/InputCreateNf.dto";
+import { InputCreatePriceProductSchema } from "../dtos/InputCreatePriceProduct.dto";
+import { CustomError } from "../errors/CustomError";
 
 
 export class PriceFormationController {
@@ -64,7 +66,7 @@ export class PriceFormationController {
                 }
             )
 
-            const output = await this.priceFormationBusiness.createPriceSale(input)
+            const output = await this.priceFormationBusiness.createPriceSaleNF(input)
 
             res.status(200).send(output)
 
@@ -73,6 +75,41 @@ export class PriceFormationController {
                 res.status(400).send(error.issues)
             } else if (error instanceof BaseError) {
                 res.status(error.statusCode).send(error.message)
+            } else {
+                res.send("Erro inesperado\n " + error)
+                
+            }
+        }
+
+    }
+
+    public createPriceSaleProducts = async (req: Request, res: Response) => {
+
+        try {
+            
+            const input = InputCreatePriceProductSchema.parse(
+                {
+                    products: req.body.products,
+                    commission: req.body.commission
+                }
+            )
+
+            const output = await this.priceFormationBusiness.createPriceSaleProducts(input)
+
+            res.status(200).send(output)
+
+        } catch (error) {
+            if (error instanceof ZodError) {
+                res.status(400).send(error.issues)
+            } else if (error instanceof BaseError) {
+                res.status(error.statusCode).send(error.message)
+            } else if (error instanceof CustomError){
+                res.status(error.codeError).json(
+                    {
+                        message: error.message,
+                        elements: error.elements
+                    }
+                )
             } else {
                 res.send("Erro inesperado\n " + error)
                 

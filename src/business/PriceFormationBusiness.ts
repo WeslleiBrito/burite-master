@@ -2,8 +2,10 @@ import { PriceFormationDatabase } from "../database/PriceFormationDatabase";
 import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { InputCreateNfDTO } from "../dtos/InputCreateNf.dto";
+import { InputCreatePriceProductDTO } from "../dtos/InputCreatePriceProduct.dto";
+import { CustomError } from "../errors/CustomError";
 import { NotFoundError } from "../errors/NotFoundError";
-import { InputGeneratePrice, NF_Price, NfPurchase, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
+import { InputGeneratePrice, InputProductSalePrice, NF_Price, NfPurchase, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
@@ -106,7 +108,8 @@ export class PriceFormationBusiness {
         return Number(price.toFixed(round))
 
     }
-    public createPriceSale = async (input: InputCreateNfDTO): Promise<NfPurchase> => {
+
+    public createPriceSaleNF = async (input: InputCreateNfDTO): Promise<NfPurchase> => {
 
         const {codeNF, commission} = input
 
@@ -132,7 +135,7 @@ export class PriceFormationBusiness {
 
 
             const dataPrice: InputGeneratePrice = {
-                commission: (commission || 1) / 100,
+                commission: (typeof commission === "undefined" ? 1 : commission) / 100,
                 cost: product.costValue,
                 discount: subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
                 expenseFixed: subgroup.fixed_unit_expense,
@@ -144,13 +147,13 @@ export class PriceFormationBusiness {
             const newSalePrice = this.generatePrice(dataPrice)
             const expenseVariableUnit = Number((expenseVariable * newSalePrice).toFixed(2))
             const discountValueMax = Number(((subgroup.discount_percentage * newSalePrice)).toFixed(2))
-            const com = Number((commission || 1 * newSalePrice).toFixed(2)) / 100
+            const comm = Number((dataPrice.commission * newSalePrice).toFixed(2)) / 100
             
             const profitUnit = Number((newSalePrice - (
                 product.costValue + 
                 subgroup.fixed_unit_expense +
                 expenseVariableUnit +
-                com +
+                comm +
                 discountValueMax
             )).toFixed(2))
 
@@ -167,7 +170,7 @@ export class PriceFormationBusiness {
                 unit: product.unit,
                 amountCost: Number((product.inputQuantity * product.costValue).toFixed(2)),
                 amountInvoicing: Number((product.inputQuantity * newSalePrice).toFixed(2)),
-                commission: com,
+                commission: comm,
                 discountPercentageMax: subgroup.discount_percentage,
                 discountValueMax,
                 expenseFixedUnit: subgroup.fixed_unit_expense,
@@ -185,5 +188,42 @@ export class PriceFormationBusiness {
             date: nfExist.date,
             products: products
         }
+    }
+
+    public createPriceSaleProducts = async (input: InputCreatePriceProductDTO) => {
+
+        const {products, commission} = input
+        const codesNotLocalized: InputProductSalePrice[] = []
+
+        const itensExist = await this.database.getProductsByCode(products.map(product => product.codeProduct))
+        
+        if(products.length > itensExist.length){
+            products.forEach((product) => {
+                const element = itensExist.find((item) => {
+                    return item.codeProduct !== product.codeProduct
+                })
+                
+                if(element){
+                    codesNotLocalized.push(
+                        {
+                            codeProduct: product.codeProduct,
+                            cost: product.cost
+                        }
+                    )
+                }
+            })
+        }
+        
+
+        if(codesNotLocalized.length > 0){
+            throw new CustomError(
+                "Existem produtos não localizados na base de dados",
+                codesNotLocalized,
+                404
+            )
+        }
+
+        return "Tudo funcionando"
+
     }
 }

@@ -20,3 +20,4 @@ const newPriceFormationController = new PriceFormationController(
 priceFormationRouter.get('/', newPriceFormationController.getOpenPurchases)
 priceFormationRouter.get('/all', newPriceFormationController.getOpenPurchasesAll)
 priceFormationRouter.post('/', newPriceFormationController.createPriceSale)
+priceFormationRouter.post('/products', newPriceFormationController.createPriceSaleProducts)

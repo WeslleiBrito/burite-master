@@ -168,3 +168,17 @@ export interface Subgroup {
     pcusto: number,
     gfiscal: number
 }
+
+export interface InputProductSalePrice {
+    codeProduct: number,
+    cost: number,
+    profitPercentage?: number,
+    profitValue?: number,
+    commission?: number
+}
+
+export interface ProductDB {
+    codeProduct: number,
+    nameProduct: string,
+    codeSubgroup: number
+}
