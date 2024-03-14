@@ -16,7 +16,9 @@ export class UpdateSubgroupsValues  {
         const updateExist = await this.updateSubgroupDatabase.getResumeSubgroup()
         const subgroupsRegistred = await this.updateSubgroupDatabase.getAllSubgroupsRegistred()
         const subgroupDb: ResumeSubgroupDB[] = []
-        const dateNow = new Date()
+        const date = new Date()
+        const timeZone = date.getTimezoneOffset()
+        const dateNow = new Date(date.getTime() - (timeZone * 60 * 1000))
 
         const subgroupsOut = subgroupsRegistred.filter((item) => {
             if(!subgroups[item.subprod_descricao]){
@@ -43,7 +45,7 @@ export class UpdateSubgroupsValues  {
                 plucro: item.plucro,
                 subgroupProfit:0,
                 subgroupProfitPercentage: 0,
-                updatedAt: new Date().toISOString()
+                updatedAt: dateNow.toISOString()
             }
         })
 
