@@ -109,7 +109,7 @@ export class PriceFormationBusiness {
 
         if(price < 1){
             round = 2
-        }else if(price > 1 && price < 4){
+        }else if(price > 1 && price < 10){
             round = 1
         }
 
