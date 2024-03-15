@@ -140,6 +140,10 @@ export interface ProductsNf extends ProductsPrice {
     commission: number,
     amountCost: number,
     amountInvoicing: number,
+    limitedProfitPorcentage: {
+        status: boolean,
+        limit: number
+    }
 }
 
 export interface NfPurchase {
@@ -152,11 +156,20 @@ export interface NfPurchase {
 
 export interface InputGeneratePrice {
     cost: number,
+    code: number,
+    nameProduct: string,
+    codeSubgroup: number,
+    nameSubgroup: string,
+    unit: string,
+    quantity: number,
     expenseFixed: number,
     expenseVariable: number,
     commission: number,
+    fraction: number,
+    item: number,
     profit: number,
-    discount: number
+    discount: number,
+    profitValue?: number
 }
 
 export interface Subgroup {
@@ -172,9 +185,13 @@ export interface Subgroup {
 export interface InputProductSalePrice {
     codeProduct: number,
     cost: number,
+    unit: string,
+    quantity?: number,
+    fraction?: number,
     profitPercentage?: number,
     profitValue?: number,
-    commission?: number
+    commission?: number,
+    discount?: number
 }
 
 export interface ProductDB {

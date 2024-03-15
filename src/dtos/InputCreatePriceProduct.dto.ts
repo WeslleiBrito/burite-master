@@ -3,7 +3,9 @@ import { InputProductSalePrice } from '../types/types';
 
 export interface InputCreatePriceProductDTO {
     products: InputProductSalePrice[],
-    commission?: number
+    nf?: string,
+    date?: Date,
+    provider?: string
 }
 
 const objectProductSchema = z.object(
@@ -20,10 +22,15 @@ const objectProductSchema = z.object(
         cost: z.number(
             {
                 invalid_type_error: "O custo do produto deve ser um número.",
-                required_error: "Informe o custo do produto"
+                required_error: "Informe o custo do produto."
             }
         ),
-
+        unit: z.string(
+            {
+                invalid_type_error: "A unidade deve ser do tipo string.",
+                required_error: "A unidade deve ser informada."
+            }
+        ).min(1, {message: "A unidade não pode ser vazia."}),
         profitPercentage: z.number({invalid_type_error: "A porcentagem de lucro deve ser um número."}).nonnegative(
             {
                 message: "A porcentagem de lucro não pode ser um valor negativo"
@@ -43,7 +50,35 @@ const objectProductSchema = z.object(
             {
                 message: "A comissão não pode ser negativa."
             }
+        ).optional(),
+        discount: z.number(
+            {
+                invalid_type_error: "O valor do desconto deve ser um tipo numérico."
+            }
+        ).nonnegative(
+            {
+                message: "O desconto não pode ser negativa."
+            }
+        ).optional(),
+        quantity: z.number(
+            {
+                invalid_type_error: "A quantidade deve ser um tipo numérico."
+            }
+        ).positive(
+            {
+                message: "A quantidade deve ser um valor maior que zero."
+            }
+        ).optional(),
+        fraction: z.number(
+            {
+                invalid_type_error: "O valor da fração deve ser um tipo numérico."
+            }
+        ).positive(
+            {
+                message: "A fração deve ter um valor maior que zero."
+            }
         ).optional()
+      
         
     }
 )
@@ -57,14 +92,23 @@ export const InputCreatePriceProductSchema = z.object(
                 required_error: "É obrigatório informar o(s) produto(s)."
             }
         ),
-        commission: z.number(
+        nf: z.string(
             {
-                invalid_type_error: "O valor da comissão deve ser um tipo numérico."
+                invalid_type_error: "O número da nota deve ser do tipo string."
             }
-        ).nonnegative(
+        ).min(1, {message: "O número da nota não pode ser vazia."}).optional(),
+        date: z.string({ invalid_type_error: 'A data precisa ser do tipo string.' })
+        .optional()
+        .refine((value) => {
+            if (!value) return true; // Se não houver valor, não aplicar validação
+            const parsedDate = new Date(value);
+            return !isNaN(parsedDate.getTime());
+        })
+        .transform((value) => (value ? new Date(value) : undefined)),
+        provider: z.string(
             {
-                message: "A comissão não pode ser negativa."
+                invalid_type_error: "O nome do fornecedor deve ser do tipo string."
             }
-        ).optional()
+        ).min(1, {message: "O nome do fornecedor não pode ser vazio."}).optional()
     }
 ).transform(data => data as InputCreatePriceProductDTO)
