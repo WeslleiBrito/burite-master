@@ -30,7 +30,7 @@ const objectProductSchema = z.object(
                 invalid_type_error: "A unidade deve ser do tipo string.",
                 required_error: "A unidade deve ser informada."
             }
-        ).min(1, {message: "A unidade não pode ser vazia."}),
+        ).min(1, {message: "A unidade não pode ser vazia."}).optional(),
         profitPercentage: z.number({invalid_type_error: "A porcentagem de lucro deve ser um número."}).nonnegative(
             {
                 message: "A porcentagem de lucro não pode ser um valor negativo"

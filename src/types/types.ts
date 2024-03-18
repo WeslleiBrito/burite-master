@@ -185,7 +185,7 @@ export interface Subgroup {
 export interface InputProductSalePrice {
     codeProduct: number,
     cost: number,
-    unit: string,
+    unit?: string,
     quantity?: number,
     fraction?: number,
     profitPercentage?: number,
@@ -197,5 +197,6 @@ export interface InputProductSalePrice {
 export interface ProductDB {
     codeProduct: number,
     nameProduct: string,
-    codeSubgroup: number
+    codeSubgroup: number,
+    unit: string
 }

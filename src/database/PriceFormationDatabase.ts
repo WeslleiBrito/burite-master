@@ -97,7 +97,8 @@ export class PriceFormationDatabase extends BaseDatabase {
       ).select(
         "prod_cod as codeProduct",
         "prod_descricao as nameProduct",
-        "prod_subgrupo as codeSubgroup"
+        "prod_subgrupo as codeSubgroup",
+        "prod_unidade as unit"
       )
 
       return result

@@ -5,14 +5,14 @@ import { InputCreateNfDTO } from "../dtos/InputCreateNf.dto";
 import { InputCreatePriceProductDTO } from "../dtos/InputCreatePriceProduct.dto";
 import { CustomError } from "../errors/CustomError";
 import { NotFoundError } from "../errors/NotFoundError";
-import { InputGeneratePrice, InputProductSalePrice, NF_Price, NfPurchase, OpenPurchasesDB, OpenPurchasesModel, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
+import { InputGeneratePrice, InputProductSalePrice, NF_Price, NfPurchase, OpenPurchasesDB, OpenPurchasesModel, ProductDB, ProductsNf, ProductsPrice, ResumeSubgroupDB } from "../types/types";
 
 export class PriceFormationBusiness {
     constructor(
         private database: PriceFormationDatabase,
         private databaseExpenseFixed: UpdateSubgroupsDatabase,
         private databaseExpenseVariable: UpdateTotalValuesDatabase
-    ){}
+    ) { }
 
     public getOpenPurchases = async (): Promise<OpenPurchasesModel[]> => {
 
@@ -22,7 +22,7 @@ export class PriceFormationBusiness {
 
         result.forEach((item) => {
 
-            if(!filter.find(purchase => purchase.nf === item.num_NF)){
+            if (!filter.find(purchase => purchase.nf === item.num_NF)) {
                 filter.push(
                     {
                         nf: item.num_NF,
@@ -48,7 +48,7 @@ export class PriceFormationBusiness {
             const filter = result.filter(product => {
                 return item === product.num_NF
             })
-            
+
             const findDataNf = result.find((nf) => nf.num_NF === item) as OpenPurchasesDB
 
             itens.push(
@@ -62,7 +62,7 @@ export class PriceFormationBusiness {
                             item: p.item,
                             code: p.codigo,
                             nameProduct: p.prod_descricao,
-                            unit:p.un,
+                            unit: p.un,
                             codeSubgroup: p.prod_subgrupo,
                             nameSubgroup: p.prod_dsubgrupo,
                             costValue: p.vr_compra_fracionado,
@@ -74,9 +74,9 @@ export class PriceFormationBusiness {
                     })
                 }
             )
-            
+
         })
-        
+
         return itens
     }
 
@@ -99,17 +99,17 @@ export class PriceFormationBusiness {
             profit,
             profitValue,
         } = input
-        
-        const percentageSum = commission + profit  + discount + expenseVariable
-      
-        const limit = percentageSum > 0.99 ? 0.99 - (commission + discount  + expenseVariable) : 0
-  
+
+        const percentageSum = commission + profit + discount + expenseVariable
+
+        const limit = percentageSum > 0.99 ? 0.99 - (commission + discount + expenseVariable) : 0
+
         const price = (cost + expenseFixed + (typeof profitValue !== "undefined" ? profitValue : 0)) / (1 - (((commission + discount + (typeof profitValue !== "undefined" ? 0 : limit > 0 ? limit : profit))) + expenseVariable))
         let round = 0
 
-        if(price < 1){
+        if (price < 4) {
             round = 2
-        }else if(price > 1 && price < 10){
+        } else if (price > 4 && price < 10) {
             round = 1
         }
 
@@ -117,20 +117,31 @@ export class PriceFormationBusiness {
         const valueMult = mult * price
         const priceRound = Math.ceil(valueMult) / mult
 
-        const roundedPrice = Number(priceRound.toFixed(round))
+        let roundedPrice = Number(price.toFixed(round))
+
+        const restDivision = Number((roundedPrice % 0.05).toFixed(2))
+
+        if(priceRound < 4){
+            if (roundedPrice % 0.05 !== 0 && restDivision < 0.05) {
+                roundedPrice = Number((roundedPrice + Number((0.05 - restDivision).toFixed(2))).toFixed(2))
+            } else if (roundedPrice % 0.05 !== 0 && restDivision > 0.05) {
+                roundedPrice = Number((roundedPrice + Number((0.1 - restDivision).toFixed(2)).toFixed(2)))
+            }
+        }
         
+
         const discountValueMax = Number((discount * roundedPrice).toFixed(2))
         const comm = Number((commission * roundedPrice).toFixed(2))
         const expenseVariableUnit = Number((expenseVariable * roundedPrice).toFixed(2))
         const profitUnit = Number((roundedPrice - (
-                cost +
-                expenseFixed +
-                expenseVariableUnit +
-                discountValueMax +
-                comm
-            )).toFixed(2)
+            cost +
+            expenseFixed +
+            expenseVariableUnit +
+            discountValueMax +
+            comm
+        )).toFixed(2)
         )
-       
+
         const profitPercentage = Number((profitUnit / roundedPrice).toFixed(2))
 
         const result: ProductsNf = {
@@ -155,40 +166,40 @@ export class PriceFormationBusiness {
             unit: unit,
             limitedProfitPorcentage: {
                 status: limit > 0 ? true : false,
-                limit: limit
+                limit: Number(limit.toFixed(2))
             }
-        } 
-    
+        }
+
         return result
 
     }
 
     public createPriceSaleNF = async (input: InputCreateNfDTO): Promise<NfPurchase> => {
 
-        const {codeNF, commission} = input
+        const { codeNF, commission } = input
 
         const nfs = await this.getOpenPurchasesAll()
         const nfExist = nfs.find((nf) => nf.nf === codeNF)
 
-        if(!nfExist){
+        if (!nfExist) {
             throw new NotFoundError('A nf informada não exite.')
         }
-        
+
         const expenseVariable = (await this.databaseExpenseVariable.findTotalValue())[0].variable_expense_percentage
         const fixedExpenses = await this.databaseExpenseFixed.getResumeSubgroup()
 
         const products: ProductsNf[] = nfExist.products.map((product) => {
             const subgroup = fixedExpenses.find((subgroupItem) => subgroupItem.cod_subgroup === product.codeSubgroup) as ResumeSubgroupDB
-            let profit = 0 
+            let profit = 0
 
-            if(subgroup.discount_percentage < 0.3){
+            if (subgroup.discount_percentage < 0.3) {
 
-                const profitSubgroup = subgroup.plucro / 100  
+                const profitSubgroup = subgroup.plucro / 100
                 profit = profitSubgroup + subgroup.discount_percentage > 0.3 ? 0.3 - subgroup.discount_percentage : profitSubgroup
             }
 
-            
-            
+
+
             const dataPrice: InputGeneratePrice = {
                 commission: (typeof commission === "undefined" ? 1 : commission) / 100,
                 cost: product.costValue,
@@ -205,12 +216,12 @@ export class PriceFormationBusiness {
                 quantity: product.inputQuantity,
                 unit: product.unit
             }
-        
-            
+
+
             const priceItem = this.generatePrice(dataPrice)
-            
+
             return priceItem
-            
+
         })
 
         return {
@@ -224,18 +235,18 @@ export class PriceFormationBusiness {
 
     public createPriceSaleProducts = async (input: InputCreatePriceProductDTO): Promise<NfPurchase> => {
 
-        const {products, nf, date, provider} = input
+        const { products, nf, date, provider } = input
         const codesNotLocalized: InputProductSalePrice[] = []
 
         const itensExist = await this.database.getProductsByCode(products.map(product => product.codeProduct))
-        
-        if(products.length > itensExist.length){
+
+        if (products.length > itensExist.length) {
             products.forEach((product) => {
                 const element = itensExist.find((item) => {
                     return item.codeProduct !== product.codeProduct
                 })
-                
-                if(element){
+
+                if (element) {
                     codesNotLocalized.push(
                         {
                             codeProduct: product.codeProduct,
@@ -246,9 +257,9 @@ export class PriceFormationBusiness {
                 }
             })
         }
-        
 
-        if(codesNotLocalized.length > 0){
+
+        if (codesNotLocalized.length > 0) {
             throw new CustomError(
                 "Existem produtos não localizados na base de dados",
                 codesNotLocalized,
@@ -260,38 +271,41 @@ export class PriceFormationBusiness {
         const fixedExpenses = await this.databaseExpenseFixed.getResumeSubgroup()
         let total = 0
 
-        const productsPrice: ProductsNf[] = itensExist.map((item, index) => {
+        const productsPrice: ProductsNf[] = products.map((product, index) => {
+
+            const item = itensExist.find((productItem) => productItem.codeProduct === product.codeProduct) as ProductDB
             const subgroup = fixedExpenses.find((subgroupItem) => subgroupItem.cod_subgroup === item.codeSubgroup) as ResumeSubgroupDB
-            const productItem = products[index]
 
             const dataPrice: InputGeneratePrice = {
-                code: item.codeProduct,
-                codeSubgroup: item.codeSubgroup,
-                commission: (typeof productItem.commission !== "undefined" ? productItem.commission : 1) / 100,
-                cost: productItem.cost,
-                discount: productItem.discount ? productItem.discount : subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
+                code: product.codeProduct,
+                codeSubgroup: subgroup.cod_subgroup,
+                commission: ((typeof product.commission !== "undefined" ? product.commission : 1)) / 100,
+                cost: product.cost,
+                discount: product.discount ? product.discount / 100 : subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
                 expenseFixed: subgroup.fixed_unit_expense,
                 expenseVariable: expenseVariable,
-                fraction: productItem.fraction ? productItem.fraction : 1,
-                item: index,
+                fraction: product.fraction ? product.fraction : 1,
+                item: index + 1,
                 nameProduct: item.nameProduct,
                 nameSubgroup: subgroup.name_subgroup,
-                profit: (productItem.profitPercentage ? productItem.profitPercentage : subgroup.plucro) / 100,
-                quantity: productItem.quantity ? productItem.quantity : 1,
-                unit:productItem.unit,
-                profitValue: typeof productItem.profitValue === "undefined" ? undefined : productItem.profitValue  
+                profit: (product.profitPercentage ? product.profitPercentage : subgroup.plucro) / 100,
+                quantity: product.quantity ? product.quantity : 1,
+                unit: product.unit ? product.unit : item.unit,
+                profitValue: typeof product.profitValue === "undefined" ? undefined : product.profitValue
             }
 
             total += dataPrice.cost * dataPrice.quantity * dataPrice.fraction
 
             return this.generatePrice(dataPrice)
+
         })
 
+       
         return {
             nf: nf ? nf : "00000",
             date: date ? date : new Date(),
             provider: provider ? provider : "standard",
-            total: total,
+            total: Number(total.toFixed(2)),
             products: productsPrice
         }
 
