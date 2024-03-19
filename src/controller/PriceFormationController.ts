@@ -61,7 +61,7 @@ export class PriceFormationController {
             
             const input = InputCreateNfSchema.parse(
                 {
-                    codeNF: req.body.codeNF,
+                    codeNF: req.params.nf,
                     commission: req.body.commission
                 }
             )
