@@ -101,7 +101,7 @@ export class PriceFormationBusiness {
         } = input
 
         const percentageSum = commission + profit + discount + expenseVariable
-
+        
         const limit = percentageSum > 0.99 ? 0.99 - (commission + discount + expenseVariable) : 0
 
         const price = (cost + expenseFixed + (typeof profitValue !== "undefined" ? profitValue : 0)) / (1 - (((commission + discount + (typeof profitValue !== "undefined" ? 0 : limit > 0 ? limit : profit))) + expenseVariable))
@@ -111,13 +111,15 @@ export class PriceFormationBusiness {
             round = 2
         } else if (price > 4 && price < 10) {
             round = 1
+        }else{
+            
         }
 
         const mult = Math.pow(10, round)
         const valueMult = mult * price
         const priceRound = Math.ceil(valueMult) / mult
 
-        let roundedPrice = Number(price.toFixed(round))
+        let roundedPrice = Math.ceil(price)
 
         const restDivision = Number((roundedPrice % 0.05).toFixed(2))
 

@@ -19,15 +19,15 @@ export class PriceFormationController {
            
             const output = await this.priceFormationBusiness.getOpenPurchases()
 
-            res.status(200).send(output)
+            res.status(200).json(output)
 
         } catch (error) {
             if (error instanceof ZodError) {
-                res.status(400).send(error.issues)
+                res.status(400).json(error.issues)
             } else if (error instanceof BaseError) {
-                res.status(error.statusCode).send(error.message)
+                res.status(error.statusCode).json(error.message)
             } else {
-                res.send("Erro inesperado\n " + error)
+                res.json("Erro inesperado\n " + error)
                 
             }
         }
@@ -40,15 +40,15 @@ export class PriceFormationController {
            
             const output = await this.priceFormationBusiness.getOpenPurchasesAll()
 
-            res.status(200).send(output)
+            res.status(200).json(output)
 
         } catch (error) {
             if (error instanceof ZodError) {
-                res.status(400).send(error.issues)
+                res.status(400).json(error.issues)
             } else if (error instanceof BaseError) {
-                res.status(error.statusCode).send(error.message)
+                res.status(error.statusCode).json(error.message)
             } else {
-                res.send("Erro inesperado\n " + error)
+                res.json("Erro inesperado\n " + error)
                 
             }
         }
@@ -68,15 +68,15 @@ export class PriceFormationController {
 
             const output = await this.priceFormationBusiness.createPriceSaleNF(input)
 
-            res.status(200).send(output)
+            res.status(200).json(output)
 
         } catch (error) {
             if (error instanceof ZodError) {
-                res.status(400).send(error.issues)
+                res.status(400).json(error.issues)
             } else if (error instanceof BaseError) {
-                res.status(error.statusCode).send(error.message)
+                res.status(error.statusCode).json(error.message)
             } else {
-                res.send("Erro inesperado\n " + error)
+                res.json("Erro inesperado\n " + error)
                 
             }
         }
@@ -96,13 +96,13 @@ export class PriceFormationController {
 
             const output = await this.priceFormationBusiness.createPriceSaleProducts(input)
 
-            res.status(200).send(output)
+            res.status(200).json(output)
 
         } catch (error) {
             if (error instanceof ZodError) {
-                res.status(400).send(error.issues)
+                res.status(400).json(error.issues)
             } else if (error instanceof BaseError) {
-                res.status(error.statusCode).send(error.message)
+                res.status(error.statusCode).json(error.message)
             } else if (error instanceof CustomError){
                 res.status(error.codeError).json(
                     {
@@ -111,7 +111,7 @@ export class PriceFormationController {
                     }
                 )
             } else {
-                res.send("Erro inesperado\n " + error)
+                res.json("Erro inesperado\n " + error)
                 
             }
         }
