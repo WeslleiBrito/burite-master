@@ -1,3 +1,5 @@
+import { InputSignupDTO } from "../dtos/users/InputSignup.dto";
+
 export interface InvoicingItemDB {
     produto: number
     venda: number
@@ -199,4 +201,27 @@ export interface ProductDB {
     nameProduct: string,
     codeSubgroup: number,
     unit: string
+}
+
+export enum USER_ROLES {
+    ADMIN = "ADMIN",
+    MASTER = "MASTER",
+    NORMAL = "NORMAL"
+}
+
+export interface UserDB {
+    id: string,
+    name: string,
+    password: string,
+    email: string,
+    role: USER_ROLES,
+    created_at: string,
+    updated_at: string
+}
+
+export interface UserModel extends InputSignupDTO{
+    id: string,
+    role: USER_ROLES, 
+    createdAt: Date,
+    updatedAt: Date
 }

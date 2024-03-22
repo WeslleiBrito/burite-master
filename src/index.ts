@@ -6,6 +6,7 @@ import { expensesRouter } from './router/expensesRouter'
 import { updateTotalValuesRouter } from './router/updateTotalValuesRouter'
 import { subgroupResumeRouter } from './router/subgroupResumeRouter'
 import { priceFormationRouter } from './router/priceFormationRouter'
+import { userRouter } from './router/userRouter'
 dontenv.config()
 
 const app = express()
@@ -15,7 +16,7 @@ app.use(express.json())
 app.listen(Number(process.env.PORT || 3003), () => {
     console.log(`Servidor rodando na porta ${process.env.PORT}`)
 })
-
+app.use('/users', userRouter)
 app.use('/invoicing', invoicingRouter)
 app.use('/expenses', expensesRouter)
 app.use('/total-value', updateTotalValuesRouter)
