@@ -2,9 +2,12 @@ import { InvoicingDatabase } from "../database/InvoicingDatabase";
 import { UpdateSubgroupsDatabase } from "../database/UpdateSubgroupsDatabase";
 import { UpdateTotalValuesDatabase } from "../database/UpdateTotalValuesDatabase";
 import { inputGetSubgroupDTO } from "../dtos/InputGetSubgroup.dto";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
 import { InvoicingItem, InvoicingItemModel } from "../models/InvoicingItem";
 import { ResumeSubgroup } from "../models/ResumeSubgroups";
+import { CryptToken } from "../services/CryptToken";
 import { roundValues } from "../services/RoundValues";
+import { TokenManager } from "../services/TokenManager";
 import { InvoicingItemDB, ResumeSubgroupDB, ResumeSubgroupModel } from "../types/types";
 
 
@@ -14,7 +17,9 @@ export class SubgroupResumeBusiness {
     constructor(
         private invoicingDatabase: InvoicingDatabase,
         private updateTotalValuesDatabase: UpdateTotalValuesDatabase,
-        private updateSubgroupsDatabase: UpdateSubgroupsDatabase
+        private updateSubgroupsDatabase: UpdateSubgroupsDatabase,
+        private cryptToken: CryptToken,
+        private tokenManager: TokenManager
     ){}
     
     public getInvoicingSubgroup = async (input: inputGetSubgroupDTO): Promise<{[key: string]: ResumeSubgroupModel}> => {
@@ -112,7 +117,13 @@ export class SubgroupResumeBusiness {
         
     }
 
-    public getSubgroup = async (): Promise<ResumeSubgroupModel[]> => {
+    public getSubgroup = async (input: inputGetSubgroupDTO): Promise<ResumeSubgroupModel[]> => {
+
+        const tokenIsValid = this.tokenManager.validateToken(this.cryptToken.decryptToken(input.token))
+
+        if(!tokenIsValid){
+            throw new UnauthorizedError("Token inválido")
+        }
 
         const result: ResumeSubgroupDB[] = await this.updateSubgroupsDatabase.getResumeSubgroup()
         

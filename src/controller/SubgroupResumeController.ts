@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ZodError } from "zod";
 import { BaseError } from "../errors/BaseError";
 import { SubgroupResumeBusiness } from "../business/SubgroupResumeBusiness";
+import { inputGetSubgroupSchema } from "../dtos/InputGetSubgroup.dto";
 
 
 export class SubgroupResumeController {
@@ -13,9 +14,16 @@ export class SubgroupResumeController {
     public getSubgroup = async (req: Request, res: Response) => {
 
         try {
-        
+            
+            const input = inputGetSubgroupSchema.parse(
+                {
+                    token: req.headers.authorization,
+                    initialDate: req.body.initialDate,
+                    finalDate: req.body.finalDate
+                }
+            )
 
-            const output = await this.subgroupResumeBusiness.getSubgroup()
+            const output = await this.subgroupResumeBusiness.getSubgroup(input)
 
             res.status(200).json(output)
 
