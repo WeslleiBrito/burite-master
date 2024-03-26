@@ -62,7 +62,7 @@ export class UserController {
             }else if (error instanceof BaseError) {
                 res.status(error.statusCode).send(error.message)
             } else {
-                res.send("Erro inesperado\n " + error)
+                res.status(500).json("Erro inesperado\n " + error)
             }
         }
     }

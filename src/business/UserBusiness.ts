@@ -1,7 +1,7 @@
 import { UserDatabase } from "../database/UserDatabase";
 import { InputDeleteAccountDTO, OutputDeleteAccountDTO } from "../dtos/users/InputDeleteAccount.dto";
 import { InputEditAccountDTO, OutputEditAccountDTO } from "../dtos/users/InputEditAccount.dto";
-import { InputGetUsersDTO, OutputGetUsersDTO } from "../dtos/users/InputGetUsers.dto";
+import { OutputGetUsersDTO } from "../dtos/users/InputGetUsers.dto";
 import { InputLoginDTO, OutputLoginDTO } from "../dtos/users/InputLogin.dto";
 import { InputSignupDTO, OutputSignupDTO } from "../dtos/users/InputSignup.dto";
 import { BadRequestError } from "../errors/BadRequestError";
@@ -9,6 +9,7 @@ import { ConflictError } from "../errors/ConflictError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
 import { User } from "../models/User";
+import { CryptToken } from "../services/CryptToken";
 import { HashManager } from "../services/HashManager";
 import { IdGenerator } from "../services/IdGenerator";
 import { TokenManager } from "../services/TokenManager";
@@ -20,7 +21,8 @@ export class UserBusiness implements UserBusinessI{
         private userDatabase: UserDatabase,
         private idGenerator: IdGenerator,
         private hashManager: HashManager,
-        private tokenManager: TokenManager
+        private tokenManager: TokenManager,
+        private cryptToken: CryptToken
     ){}
 
     public signup = async (input: InputSignupDTO): Promise<OutputSignupDTO> => {
@@ -71,7 +73,7 @@ export class UserBusiness implements UserBusinessI{
 
         return {
             message: "Cadastro efetuado com sucesso!",
-            token
+            token: this.cryptToken.encryptToken(token)
         }
         
     }
@@ -101,7 +103,7 @@ export class UserBusiness implements UserBusinessI{
         )
         
         return {
-            token,
+            token: this.cryptToken.encryptToken(token),
             idUser: account.id
         }
 
@@ -110,7 +112,7 @@ export class UserBusiness implements UserBusinessI{
     public editAccount = async (input: InputEditAccountDTO): Promise<OutputEditAccountDTO> => {
         const {token, id, password, name} = input
 
-        const tokenIsValid = this.tokenManager.validateToken(token)
+        const tokenIsValid = this.tokenManager.validateToken(this.cryptToken.decryptToken(token))
 
         if(!tokenIsValid){
             throw new UnauthorizedError("Token inválido")
@@ -156,7 +158,7 @@ export class UserBusiness implements UserBusinessI{
         
         const {id, token} = input
 
-        const tokenIsValid = this.tokenManager.validateToken(token)
+        const tokenIsValid = this.tokenManager.validateToken(this.cryptToken.decryptToken(token))
 
         if(!tokenIsValid){
             throw new BadRequestError("Token inválido, renove seu token refazendo o login.")

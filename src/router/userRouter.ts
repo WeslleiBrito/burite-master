@@ -5,6 +5,7 @@ import { UserDatabase } from "../database/UserDatabase"
 import { IdGenerator } from "../services/IdGenerator"
 import { HashManager } from "../services/HashManager"
 import { TokenManager } from "../services/TokenManager"
+import { CryptToken } from "../services/CryptToken"
 
 
 export const userRouter = express.Router()
@@ -15,7 +16,8 @@ const newUserController = new UserController(
         new UserDatabase,
         new IdGenerator(),
         new HashManager(),
-        new TokenManager()
+        new TokenManager(),
+        new CryptToken()
     )
 )
 
