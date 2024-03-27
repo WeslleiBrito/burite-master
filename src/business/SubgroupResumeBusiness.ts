@@ -118,7 +118,7 @@ export class SubgroupResumeBusiness {
     }
 
     public getSubgroup = async (input: inputGetSubgroupDTO): Promise<ResumeSubgroupModel[]> => {
-
+        
         const tokenIsValid = this.tokenManager.validateToken(this.cryptToken.decryptToken(input.token))
 
         if(!tokenIsValid){

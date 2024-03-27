@@ -77,7 +77,7 @@ export class UserController {
                     password: req.body.password
                 }
             )
-
+            
             const output = await this.userBusiness.editAccount(input)
 
             res.status(200).send(output)

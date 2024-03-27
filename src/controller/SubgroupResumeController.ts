@@ -5,6 +5,7 @@ import { SubgroupResumeBusiness } from "../business/SubgroupResumeBusiness";
 import { inputGetSubgroupSchema } from "../dtos/InputGetSubgroup.dto";
 
 
+
 export class SubgroupResumeController {
 
     constructor(
@@ -12,7 +13,7 @@ export class SubgroupResumeController {
     ){}
 
     public getSubgroup = async (req: Request, res: Response) => {
-
+        
         try {
             
             const input = inputGetSubgroupSchema.parse(
@@ -22,7 +23,7 @@ export class SubgroupResumeController {
                     finalDate: req.body.finalDate
                 }
             )
-
+            
             const output = await this.subgroupResumeBusiness.getSubgroup(input)
 
             res.status(200).json(output)
