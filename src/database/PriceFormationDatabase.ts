@@ -98,7 +98,8 @@ export class PriceFormationDatabase extends BaseDatabase {
         "prod_cod as codeProduct",
         "prod_descricao as nameProduct",
         "prod_subgrupo as codeSubgroup",
-        "prod_unidade as unit"
+        "prod_unidade as unit",
+        "prod_precocusto as cost"
       )
 
       return result

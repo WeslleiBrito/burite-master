@@ -140,6 +140,7 @@ export interface ProductsNf extends ProductsPrice {
     profitUnit: number,
     profitPercentage: number,
     commission: number,
+    commissionPorcentage: number,
     amountCost: number,
     amountInvoicing: number,
     limitedProfitPorcentage: {
@@ -171,7 +172,8 @@ export interface InputGeneratePrice {
     item: number,
     profit: number,
     discount: number,
-    profitValue?: number
+    profitValue?: number,
+    newPrice?: number,
 }
 
 export interface Subgroup {
@@ -187,6 +189,7 @@ export interface Subgroup {
 export interface InputProductSalePrice {
     codeProduct: number,
     cost: number,
+    price?: number,
     unit?: string,
     quantity?: number,
     fraction?: number,
@@ -200,7 +203,8 @@ export interface ProductDB {
     codeProduct: number,
     nameProduct: string,
     codeSubgroup: number,
-    unit: string
+    unit: string,
+    cost: number
 }
 
 export enum USER_ROLES {

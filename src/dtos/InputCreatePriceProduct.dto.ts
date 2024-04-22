@@ -24,7 +24,21 @@ const objectProductSchema = z.object(
                 invalid_type_error: "O custo do produto deve ser um número.",
                 required_error: "Informe o custo do produto."
             }
-        ),
+        ).positive(
+            {
+                message: "O custo do produto não pode ser menor ou igual a zero."
+            }
+        ).optional(),
+        price: z.number(
+            {
+                invalid_type_error: "O valor do novo preço de venda deve ser um tipo numérico."
+            }
+        ).nonnegative(
+            {
+                message: "A o valor da venda não pode ser negativa."
+            }
+        ).optional(),
+
         unit: z.string(
             {
                 invalid_type_error: "A unidade deve ser do tipo string.",

@@ -98,13 +98,14 @@ export class PriceFormationBusiness {
             item,
             profit,
             profitValue,
+            newPrice
         } = input
 
         const percentageSum = commission + profit + discount + expenseVariable
         
         const limit = percentageSum > 0.99 ? 0.99 - (commission + discount + expenseVariable) : 0
 
-        const price = (cost + expenseFixed + (typeof profitValue !== "undefined" ? profitValue : 0)) / (1 - (((commission + discount + (typeof profitValue !== "undefined" ? 0 : limit > 0 ? limit : profit))) + expenseVariable))
+        const price = newPrice ? newPrice : (cost + expenseFixed + (typeof profitValue !== "undefined" ? profitValue : 0)) / (1 - (((commission + discount + (typeof profitValue !== "undefined" ? 0 : limit > 0 ? limit : profit))) + expenseVariable))
         
         let round = 0
 
@@ -145,8 +146,9 @@ export class PriceFormationBusiness {
         )).toFixed(2)
         )
 
-        const profitPercentage = Number((profitUnit / roundedPrice).toFixed(2))
-
+        const profitPercentage = Number((profitUnit / roundedPrice * 100).toFixed(2))
+        const commissionPorcentage = Number((comm / roundedPrice * 100).toFixed(2))
+        
         const result: ProductsNf = {
             nameProduct: nameProduct,
             nameSubgroup: nameSubgroup,
@@ -158,10 +160,11 @@ export class PriceFormationBusiness {
             expenseFixedUnit: expenseFixed,
             expenseVariableUnit: expenseVariableUnit,
             commission: comm,
+            commissionPorcentage: commissionPorcentage,
             codeSubgroup: codeSubgroup,
             amountCost: Number((quantity * cost * fraction).toFixed(2)),
             amountInvoicing: Number((quantity * roundedPrice * fraction).toFixed(2)),
-            discountPercentageMax: discount,
+            discountPercentageMax: discount * 100,
             discountValueMax: discountValueMax,
             fraction: fraction,
             inputQuantity: quantity * fraction,
@@ -283,7 +286,7 @@ export class PriceFormationBusiness {
                 code: product.codeProduct,
                 codeSubgroup: subgroup.cod_subgroup,
                 commission: ((typeof product.commission !== "undefined" ? product.commission : 1)) / 100,
-                cost: product.cost,
+                cost: product.cost ? product.cost : item.cost,
                 discount: typeof product.discount !== "undefined" ? product.discount / 100 : subgroup.discount_percentage > 0.15 ? subgroup.discount_percentage : 0.15,
                 expenseFixed: subgroup.fixed_unit_expense,
                 expenseVariable: expenseVariable,
@@ -294,7 +297,8 @@ export class PriceFormationBusiness {
                 profit: (typeof product.profitPercentage !== "undefined" ? product.profitPercentage : subgroup.plucro) / 100,
                 quantity: product.quantity ? product.quantity : 1,
                 unit: product.unit ? product.unit : item.unit,
-                profitValue: typeof product.profitValue === "undefined" ? undefined : product.profitValue
+                profitValue: typeof product.profitValue === "undefined" ? undefined : product.profitValue,
+                newPrice: product.price
             }
 
             total += dataPrice.cost * dataPrice.quantity * dataPrice.fraction
