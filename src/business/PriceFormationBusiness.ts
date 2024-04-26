@@ -133,18 +133,18 @@ export class PriceFormationBusiness {
             roundedPrice = Math.ceil(roundedPrice)
         }
         
+        const discountValueMax = discount * roundedPrice
+        const comm = commission * roundedPrice
+        const expenseVariableUnit = expenseVariable * roundedPrice
 
-        const discountValueMax = Number((discount * roundedPrice).toFixed(2))
-        const comm = Number((commission * roundedPrice).toFixed(2))
-        const expenseVariableUnit = Number((expenseVariable * roundedPrice).toFixed(2))
-        const profitUnit = Number((roundedPrice - (
+        const profitUnit = roundedPrice - (
             cost +
             expenseFixed +
             expenseVariableUnit +
             discountValueMax +
             comm
-        )).toFixed(2)
         )
+
 
         const profitPercentage = Number((profitUnit / roundedPrice * 100).toFixed(2))
         const commissionPorcentage = Number((comm / roundedPrice * 100).toFixed(2))
@@ -154,18 +154,18 @@ export class PriceFormationBusiness {
             nameSubgroup: nameSubgroup,
             newSalePrice: roundedPrice,
             costValue: cost,
-            profitUnit: profitUnit,
-            profitPercentage: profitPercentage,
+            profitUnit: Number(profitUnit.toFixed(2)),
+            profitPercentage: Number(profitPercentage.toFixed(2)),
             code: code,
             expenseFixedUnit: expenseFixed,
-            expenseVariableUnit: expenseVariableUnit,
-            commission: comm,
-            commissionPorcentage: commissionPorcentage,
+            expenseVariableUnit: Number(expenseVariableUnit.toFixed(2)),
+            commission: Number(comm.toFixed(2)),
+            commissionPorcentage: Number(commissionPorcentage.toFixed(2)),
             codeSubgroup: codeSubgroup,
             amountCost: Number((quantity * cost * fraction).toFixed(2)),
             amountInvoicing: Number((quantity * roundedPrice * fraction).toFixed(2)),
             discountPercentageMax: discount * 100,
-            discountValueMax: discountValueMax,
+            discountValueMax: Number(discountValueMax.toFixed(2)),
             fraction: fraction,
             inputQuantity: quantity * fraction,
             item: item,
