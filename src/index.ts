@@ -7,6 +7,7 @@ import { updateTotalValuesRouter } from './router/updateTotalValuesRouter'
 import { subgroupResumeRouter } from './router/subgroupResumeRouter'
 import { priceFormationRouter } from './router/priceFormationRouter'
 import { userRouter } from './router/userRouter'
+import { profitabilityRouter } from './router/profitabilityRouter'
 dontenv.config()
 
 const app = express()
@@ -23,3 +24,4 @@ app.use('/expenses', expensesRouter)
 app.use('/total-value', updateTotalValuesRouter)
 app.use('/subgroup', subgroupResumeRouter)
 app.use('/price-formation', priceFormationRouter)
+app.use('/profitability', profitabilityRouter)

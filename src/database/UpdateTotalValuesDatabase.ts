@@ -9,7 +9,7 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
 
     public findTotalValue = async (): Promise<TotalValuesDB[]> => {
 
-        const result: TotalValuesDB[] = await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES)
+        const result: TotalValuesDB[] = await UpdateTotalValuesDatabase.connection(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES)
         
         return result
     }
@@ -24,14 +24,14 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
 
     public findTotalValueByDate = async (input: {initialDate: string, finalDate: string}): Promise<TotalValuesDB[]> => {
 
-        const result: TotalValuesDB[] = await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES)
+        const result: TotalValuesDB[] = await UpdateTotalValuesDatabase.connection(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES)
 
         return result
     }
 
     public createTotalValue = async (input: TotalValuesDB): Promise<void> => {
 
-        await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES).insert(input)
+        await UpdateTotalValuesDatabase.connection(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES).insert(input)
 
     }
 
@@ -58,7 +58,7 @@ export class UpdateTotalValuesDatabase extends BaseDatabase {
             number_of_months 
         } = input
 
-        await UpdateTotalValuesDatabase.connectionDatabaseSqlite(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES).update(
+        await UpdateTotalValuesDatabase.connection(UpdateTotalValuesDatabase.TABLE_TOTAL_VALUES).update(
             {
                 invoicing,
                 cost,

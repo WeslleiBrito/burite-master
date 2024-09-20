@@ -1,96 +1,84 @@
 
 
 export class InvoicingItem {
+    
     constructor(
-        private codProduct: number,
-        private codSale: number,
-        private nameProduct: string,
-        private nameSubgroup: string,
-        private codSubgroup: number,
-        private baseProfit: number,
-        private quantity: number,
-        private quantityReturned: number,
-        private amountSale: number,
-        private unitaryValue: number,
-        private cost: number,
-        private discount: number,
-        private conversionFactor: number,
-        private dateSale: string
-    ){}
+        private data: data
+        ){}
     
     public getAllInvoicingItem = (): InvoicingItemModel => {
         return {
-            codProduct: this.codProduct,
-            codSale: this.codSale,
-            nameProduct: this.nameProduct,
-            nameSubgroup: this.nameSubgroup,
-            codSubgroup: this.codSubgroup,
-            baseProfit: this.baseProfit,
-            quantity: this.quantity,
-            quantityReturned: this.quantityReturned,
-            amountSale: this.amountSale,
-            unitaryValue: this.unitaryValue,
-            cost: this.cost,
-            discount: this.discount,
-            conversionFactor: this.conversionFactor,
-            dateSale: this.dateSale
+            codProduct: this.data.codProduct,
+            codSale: this.data.codSale,
+            nameProduct: this.data.nameProduct,
+            nameSubgroup: this.data.nameSubgroup,
+            codSubgroup: this.data.codSubgroup,
+            baseProfit: this.data.baseProfit,
+            quantity: this.data.quantity,
+            quantityReturned: this.data.quantityReturned,
+            amountSale: this.data.amountSale,
+            unitaryValue: this.data.unitaryValue,
+            cost: this.data.cost,
+            discount: this.data.discount,
+            conversionFactor: this.data.conversionFactor,
+            dateSale: this.data.dateSale
         }
     }
 
     public getCodProduct = (): number => {
-        return this.codProduct
+        return this.data.codProduct
     }
 
     public getCodSale = (): number => {
-        return this.codSale
+        return this.data.codSale
     }
 
     public getNameProduct = (): string => {
-        return this.nameProduct
+        return this.data.nameProduct
     }
 
     public getNameSubgroup = (): string => {
-        return this.nameSubgroup
+        return this.data.nameSubgroup
     }
 
     public getCodSubgroup = (): number => {
-        return this.codSubgroup
+        return this.data.codSubgroup
     }
 
     public getBaseProfit = (): number => {
-        return this.baseProfit
+        return this.data.baseProfit
     }
 
     public getQuantity = (): number => {
-        return this.quantity
+        return this.data.quantity
     }
 
     public getQuantityReturned = (): number => {
-        return this.quantityReturned
+        return this.data.quantityReturned
     }
 
     public getAmountSale = (): number => {
-        return this.amountSale
+        return this.data.amountSale
     }
 
     public getUnitaryValue = (): number => {
-        return this.unitaryValue
+        return this.data.unitaryValue
     }
 
     public getUnitaryCost = (): number => {
-        return this.cost
+        return this.data.cost
     }
 
     public getDiscount = (): number => {
-        return this.discount
+        return this.data.discount
     }
 
     public getConversionFactory = (): number => {
-        return this.conversionFactor
+        return this.data.conversionFactor
     }
 
     public getDateSale = (): string => {
-        return this.dateSale
+        return this.data.dateSale
     }
 }
 
@@ -108,6 +96,23 @@ export interface InvoicingItemModel {
     unitaryValue: number,
     cost: number,
     discount: number
+    conversionFactor: number,
+    dateSale: string
+}
+
+interface data {
+    codProduct: number,
+    codSale: number,
+    nameProduct: string,
+    nameSubgroup: string,
+    codSubgroup: number,
+    baseProfit: number,
+    quantity: number,
+    quantityReturned: number,
+    amountSale: number,
+    unitaryValue: number,
+    cost: number,
+    discount: number,
     conversionFactor: number,
     dateSale: string
 }

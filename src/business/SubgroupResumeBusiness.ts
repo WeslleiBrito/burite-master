@@ -46,21 +46,22 @@ export class SubgroupResumeBusiness {
 
         const itens = result.map((item): InvoicingItemModel => {
             
-            const newInvoicingItem = new InvoicingItem(
-                item.produto,
-                item.venda,
-                item.descricao,
-                item.prod_dsubgrupo,
-                item.prod_subgrupo,
-                item.plucro,
-                item.qtd,
-                item.qtd_devolvida,
-                item.total,
-                item.vrunitario,
-                item.vrcusto_composicao,
-                item.desconto,
-                item.fator,
-                item.dtvenda
+            const newInvoicingItem = new InvoicingItem({
+                codProduct: item.produto,
+                codSale: item.venda,
+                nameProduct: item.descricao,
+                nameSubgroup: item.prod_dsubgrupo,
+                codSubgroup: item.prod_subgrupo,
+                baseProfit: item.plucro,
+                quantity: item.qtd,
+                quantityReturned: item.qtd_devolvida,
+                amountSale: item.total,
+                unitaryValue: item.vrunitario,
+                cost: item.vrcusto_composicao,
+                discount: item.desconto,
+                conversionFactor: item.fator,
+                dateSale: item.dtvenda
+            }
             )
 
             return newInvoicingItem.getAllInvoicingItem()

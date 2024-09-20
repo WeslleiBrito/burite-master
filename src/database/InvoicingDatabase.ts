@@ -32,6 +32,48 @@ export class InvoicingDatabase extends BaseDatabase{
         return result
     }
 
+    public getItensInvoicingSubgroupAllTest = async (): Promise<InvoicingItemDB[]> => {
+
+        const result: InvoicingItemDB[] = await InvoicingDatabase.connection(InvoicingDatabase.TABLE_SALE_ITEM)
+        .innerJoin('produto', 'venda_item.produto', 'produto.prod_cod')
+        .leftJoin('subgrupo_produtos', 'produto.prod_subgrupo', 'subgrupo_produtos.subprod_cod')
+        .innerJoin('venda', 'venda_item.venda', 'venda.vend_cod')
+        .innerJoin('funcionario', 'vendedor', 'funcionario.fun_cod')
+        .select(
+            'produto',
+            'venda',
+            'descricao',
+            'prod_dsubgrupo',
+            'prod_subgrupo',
+            'plucro',
+            'qtd',
+            'qtd_devolvida',
+            'vrunitario',
+            'venda_item.total',
+            'vrcusto_composicao',
+            'venda_item.desconto',
+            'fator',
+            'dtvenda',
+            'vendedor',
+            'fun_nome',
+            'venda.total as total_venda',
+            'cartao',
+            'cartaod',
+            'dinheiro',
+            'cheque',
+            'prazo',
+            'transferencia',
+            'credito',
+            'venda.desconto',
+            'venda.acrescimo',
+            'finalizacao',
+            'nome'
+            
+        )
+
+        return result
+    }
+    
     public getItensInvoicingSubgroupByInitialDate = async (initialDate: string): Promise<InvoicingItemDB[]> => {
 
         const result: InvoicingItemDB[] = await InvoicingDatabase.connection(InvoicingDatabase.TABLE_SALE_ITEM)

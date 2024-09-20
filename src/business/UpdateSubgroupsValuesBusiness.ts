@@ -12,7 +12,7 @@ export class UpdateSubgroupsValues  {
     ){}
     
     public updateValues = async (): Promise<void> => {
-        const subgroups = await this.invoicingBusiness.getAllSaleItem()
+        const subgroups = await this.invoicingBusiness.getAllSaleItem()        
         const updateExist = await this.updateSubgroupDatabase.getResumeSubgroup()
         const subgroupsRegistred = await this.updateSubgroupDatabase.getAllSubgroupsRegistred()
         const subgroupDb: ResumeSubgroupDB[] = []

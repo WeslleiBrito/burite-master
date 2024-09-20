@@ -1,6 +1,6 @@
 import { InputSignupDTO } from "../dtos/users/InputSignup.dto";
 
-export interface InvoicingItemDB {
+export interface InvoicingItemDB extends saleDb {
     produto: number
     venda: number
     descricao: string
@@ -228,4 +228,20 @@ export interface UserModel extends InputSignupDTO{
     role: USER_ROLES, 
     createdAt: Date,
     updatedAt: Date
+}
+
+export interface saleDb {
+    vendedor: number,
+    fun_nome: string,
+    total_venda: number,
+    cartao: number,
+    cartaod: number,
+    dinheiro: number,
+    cheque: number,
+    prazo: number,
+    transferencia: number,
+    credito: number,
+    desconto: number,
+    acrescimo: number,
+    nome: string,
 }

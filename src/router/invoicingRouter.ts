@@ -16,3 +16,4 @@ const newInvoicingController = new InvoicingController(
 )
 
 invoicingRouter.get('/', newInvoicingController.getSaleItemByDate)
+invoicingRouter.get('/test-get-values', newInvoicingController.getAllSaleItemTest)

@@ -6,7 +6,19 @@ import { IdGenerator } from "../services/IdGenerator";
 import { roundValues } from "../services/RoundValues";
 import { TotalValuesDB } from "../types/types";
 
+function formatCurrentDate(): string {
+    const currentDate = new Date();
 
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Mês começa em 0, então somamos 1
+    const day = String(currentDate.getDate()).padStart(2, '0');
+    
+    const hours = String(currentDate.getHours()).padStart(2, '0');
+    const minutes = String(currentDate.getMinutes()).padStart(2, '0');
+    const seconds = String(currentDate.getSeconds()).padStart(2, '0');
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
 
 export class UpdateTotalValuesBusiness {
 
@@ -20,7 +32,7 @@ export class UpdateTotalValuesBusiness {
     public updateDatabase = async (): Promise<void> => {
 
         const invoicing = await this.invoicingDatabase.getItensInvoicingSubgroupAll()
-
+        
         const orderDate = invoicing.sort((a, b) => {
             return new Date(a.dtvenda).getMilliseconds() - new Date(b.dtvenda).getMilliseconds()
         })
@@ -56,7 +68,7 @@ export class UpdateTotalValuesBusiness {
         const amountExpenseFixed = resultFixed.map((expense) => {
             return expense.rateio_vlrparcela
         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
-
+    
         const amountExpenseVariable = resultVariable.map((expense) => {
             return expense.rateio_vlrparcela
         }).reduce((accumulator, currentValue) => accumulator + currentValue, 0)
@@ -80,7 +92,7 @@ export class UpdateTotalValuesBusiness {
             variable_expense_percentage: roundValues('round', variableExpensePercentage, 3),
             discount_percentage: roundValues('round', discountPercentage, 2),
             created_at: "",
-            updated_at: new Date().toISOString(),
+            updated_at: formatCurrentDate(),
             number_of_months: months
         }
 
