@@ -12,22 +12,26 @@ export class UpdateSubgroupsValues  {
     ){}
     
     public updateValues = async (): Promise<void> => {
-        const subgroups = await this.invoicingBusiness.getAllSaleItem()        
+        const subgroups = await this.invoicingBusiness.getAllSaleItem()       
         const updateExist = await this.updateSubgroupDatabase.getResumeSubgroup()
         const subgroupsRegistred = await this.updateSubgroupDatabase.getAllSubgroupsRegistred()
         const subgroupDb: ResumeSubgroupDB[] = []
         const date = new Date()
         const timeZone = date.getTimezoneOffset()
         const dateNow = new Date(date.getTime() - (timeZone * 60 * 1000))
-
+  
+        
         const subgroupsOut = subgroupsRegistred.filter((item) => {
-            if(!subgroups[item.subprod_descricao]){
+            
+            if(!subgroups[item.subprod_cod]){
                 return item
             }
         })
         
+
         subgroupsOut.forEach((item) => {
-            subgroups[item.subprod_descricao] = {
+            
+            subgroups[item.subprod_cod] = {
                 amountCost: 0,
                 amountDiscount: 0,
                 amountFixed: 0,
@@ -83,7 +87,6 @@ export class UpdateSubgroupsValues  {
             await this.updateSubgroupDatabase.createResumeSubgroup(subgroupDb) 
             
         }else{
-
             if(updateExist.length < subgroupDb.length){
                 const newSubgroup: ResumeSubgroupDB[] = [] 
 
@@ -92,6 +95,7 @@ export class UpdateSubgroupsValues  {
                     
 
                     if(!updateExist.find((subgroup) => subgroup.cod_subgroup === value.codSubgroup)){
+                        console.log(value)
                         newSubgroup.push(
                             {
                                 amount_cost: value.amountCost,
@@ -117,6 +121,7 @@ export class UpdateSubgroupsValues  {
                     }
                     
                 })
+        
 
                 await this.updateSubgroupDatabase.createResumeSubgroup(newSubgroup)
             }else{

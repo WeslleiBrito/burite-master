@@ -95,7 +95,7 @@ export class PriceFormationController {
             )
 
             const output = await this.priceFormationBusiness.createPriceSaleProducts(input)
-
+            
             res.status(200).json(output)
 
         } catch (error) {

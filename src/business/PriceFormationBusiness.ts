@@ -185,17 +185,20 @@ export class PriceFormationBusiness {
         const { codeNF, commission } = input
 
         const nfs = await this.getOpenPurchasesAll()
+        
         const nfExist = nfs.find((nf) => nf.nf === codeNF)
 
         if (!nfExist) {
             throw new NotFoundError('A nf informada não exite.')
         }
-
+        
         const expenseVariable = (await this.databaseExpenseVariable.findTotalValue())[0].variable_expense_percentage
         const fixedExpenses = await this.databaseExpenseFixed.getResumeSubgroup()
+    
 
         const products: ProductsNf[] = nfExist.products.map((product) => {
             const subgroup = fixedExpenses.find((subgroupItem) => subgroupItem.cod_subgroup === product.codeSubgroup) as ResumeSubgroupDB
+
             let profit = 0
 
             if (subgroup.discount_percentage < 0.3) {
@@ -204,7 +207,7 @@ export class PriceFormationBusiness {
                 profit = profitSubgroup + subgroup.discount_percentage > 0.3 ? 0.3 - subgroup.discount_percentage : profitSubgroup
             }
 
-
+        
 
             const dataPrice: InputGeneratePrice = {
                 commission: (typeof commission === "undefined" ? 1 : commission) / 100,
@@ -229,7 +232,7 @@ export class PriceFormationBusiness {
             return priceItem
 
         })
-
+     
         return {
             provider: nfExist.provider,
             nf: nfExist.nf,

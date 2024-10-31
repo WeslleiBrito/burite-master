@@ -49,10 +49,10 @@ export class InvoicingBusiness {
 
         itens.forEach((item) => {
 
-            if (!resumeSubgroup[item.nameSubgroup]) {
+            if (!resumeSubgroup[item.codSubgroup]) {
 
                 const itensSubgrupo = itens.filter((sale) => {
-                    return sale.nameSubgroup === item.nameSubgroup
+                    return sale.codSubgroup === item.codSubgroup
                 })
 
                 const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
@@ -91,7 +91,7 @@ export class InvoicingBusiness {
                     date
 
                 )
-                resumeSubgroup[item.nameSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
+                resumeSubgroup[item.codSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
             }
         })
 
@@ -207,10 +207,10 @@ export class InvoicingBusiness {
 
         itens.forEach((item) => {
 
-            if (!resumeSubgroup[item.nameSubgroup]) {
+            if (!resumeSubgroup[item.codSubgroup]) {
 
                 const itensSubgrupo = itens.filter((sale) => {
-                    return sale.nameSubgroup === item.nameSubgroup
+                    return sale.codSubgroup === item.codSubgroup
                 })
 
                 const amountQuantity = itensSubgrupo.reduce((accumulator, currentValue) => accumulator + currentValue.quantity, 0)
@@ -249,7 +249,7 @@ export class InvoicingBusiness {
                     date
 
                 )
-                resumeSubgroup[item.nameSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
+                resumeSubgroup[item.codSubgroup] = newResumeSubgroup.getAllResumeSubgroup()
             }
         })
 
