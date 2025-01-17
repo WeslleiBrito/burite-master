@@ -110,9 +110,9 @@ export class UpdateTotalValuesBusiness {
             const date = new Date().toISOString()
 
             resume.id = this.idGenerator.generate()
-            resume.created_at = date
-            resume.updated_at = date
-
+            resume.created_at = date.slice(0, 9)
+            resume.updated_at = date.slice(0, 9)
+            
             await this.updateTotalValuesDatabase.createTotalValue(resume)
         }
     }
